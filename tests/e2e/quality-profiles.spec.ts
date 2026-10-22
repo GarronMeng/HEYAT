@@ -37,7 +37,9 @@ test('all shader tiers render without changing cash, room state or save', async 
       };
     };
     expect(report.visualTier.quality).toBe(tier);
-    expect(report.visualTier.shader).toBe(tier === 'low' ? 'Lambert' : 'Standard');
+    expect(report.visualTier.shader).toBe(
+      tier === 'low' ? 'Lambert' : 'Standard',
+    );
     expect(report.visualTier.environmentReflection).toBe(tier === 'high');
     await page.getByRole('button', { name: '关闭面板' }).click();
     await expect(page.locator('#cash')).toHaveText('¥120');
