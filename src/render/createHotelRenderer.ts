@@ -44,7 +44,11 @@ export function createRenderer(
   scene.fog = new T.Fog('#091a2a', 26, 65);
   const assets = createAssets(),
     people = createPeople(assets);
-  let quality: Quality = 'medium';
+  // Start iPhone/Android in the cheapest tier rather than waiting for a
+  // sustained low-FPS trigger during shader compilation.
+  let quality: Quality = /iPhone|iPad|Android/i.test(navigator.userAgent)
+    ? 'low'
+    : 'medium';
   // Prefilter once at startup. No live reflection camera, per-room lights or shadows.
   const bakeEnvironment = () => {
     const environmentScene = new RoomEnvironment();
@@ -247,6 +251,13 @@ export function createRenderer(
       device: navigator.userAgent,
       viewport: { width, height, dpr },
       mobileStatus: 'MOBILE_PERF_UNVERIFIED',
+      visualTier: {
+        quality,
+        shader: quality === 'low' ? 'Lambert' : 'Standard',
+        normalMaps: quality === 'high',
+        environmentReflection: !!environment,
+        decorativeOverlays: quality !== 'low',
+      },
       renderer: context.getParameter(context.RENDERER),
       gpu: context.getExtension('WEBGL_debug_renderer_info')
         ? context.getParameter(
