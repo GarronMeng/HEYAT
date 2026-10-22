@@ -1,0 +1,30 @@
+{
+  "device": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+  "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "browserViewport": [
+    1440,
+    900
+  ],
+  "drawingBuffers": [
+    [
+      1070,
+      566
+    ],
+    [
+      1440,
+      566
+    ]
+  ],
+  "purpose": "Short diagnostic during camera motion and capture, not hardware FPS acceptance",
+  "samples": 38,
+  "medianCalls": 66.0,
+  "medianTriangles": 60010.0,
+  "medianFPS": 2.9862125423385804,
+  "resources": {
+    "geometries": 18,
+    "textures": 26,
+    "surfaceTextureBytesEstimate": 3189419,
+    "heapBytes": 11200000,
+    "note": "Texture bytes are a conservative RGBA+mipmap estimate; GPU/VRAM bytes are not exposed by WebGL. Heap is browser-dependent."
+  }
+}
