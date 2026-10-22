@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: "HEYAT commit SHA or branch to verify"
+        description: 'HEYAT commit SHA or branch to verify'
         required: true
         type: string
         default: a430df8aab7bb372366de9c977dcb550645a7f8f
