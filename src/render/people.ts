@@ -37,8 +37,8 @@ const PALETTE: Record<
 };
 
 /** Merge colored primitives once per role: a guest is only three near-field meshes. */
-function createFigureGeometry(
-  assets: Assets,
+export function createFigureGeometry(
+  assets: Pick<Assets, 'geometries'>,
   role: Role,
   leg = false,
 ): T.BufferGeometry {
@@ -50,7 +50,16 @@ function createFigureGeometry(
     at: [number, number, number],
     color: string,
   ) => {
-    const geometry = assets.geometries[shape].clone();
+    const source = assets.geometries[shape];
+    // Three.js primitive geometries do not all use the same index layout.
+    // BufferGeometryUtils.mergeGeometries requires every input to have the
+    // same index mode and attribute schema. Normalize before merging.
+    const geometry = source.index ? source.toNonIndexed() : source.clone();
+    for (const attribute of Object.keys(geometry.attributes)) {
+      if (!['position', 'normal', 'uv'].includes(attribute)) {
+        geometry.deleteAttribute(attribute);
+      }
+    }
     geometry.scale(...dimensions);
     geometry.translate(...at);
     const rgb = new T.Color(color);
@@ -96,7 +105,8 @@ function createFigureGeometry(
   }
   const merged = mergeGeometries(shapes, false);
   shapes.forEach((shape) => shape.dispose());
-  if (!merged) throw new Error('无法合并人物几何体');
+  if (!merged)
+    throw new Error(`无法合并人物几何体：${role} ${leg ? 'legs' : 'body'}`);
   return merged;
 }
 
