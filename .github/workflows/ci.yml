@@ -26,17 +26,12 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      # Temporary diagnostic: show the exact Prettier diff in CI logs.
-      - run: |
-          npx prettier src/render/assets.ts tests/e2e/quality-profiles.spec.ts tests/unit/perf.test.ts tests/unit/renderLoop.test.ts src/app/renderLoop.ts --write
-          git diff -- src/render/assets.ts tests/e2e/quality-profiles.spec.ts tests/unit/perf.test.ts tests/unit/renderLoop.test.ts src/app/renderLoop.ts
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
       - run: npx playwright install --with-deps chromium
-      # Diagnostic only: skip long software WebGL E2E, restore before review.
-      # - run: npm run test:e2e
+      - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: always()
         with:
