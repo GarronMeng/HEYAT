@@ -1,0 +1,38 @@
+{
+  "environment": "Linux x86_64 / Chromium 141 / ANGLE SwiftShader software renderer",
+  "mobileStatus": "MOBILE_PERF_UNVERIFIED",
+  "requestedSampleMs": 120000,
+  "comparisonLimitation": "UI changes canvas from 1440x776 to 1440x566; FPS comparison is not an isolated UI benchmark.",
+  "results": {
+    "before": {
+      "canvas": [1440, 776],
+      "samples": 106,
+      "medianFPS": 2.044256561741636,
+      "medianP95ms": 1010.7999999998137,
+      "medianDrawCalls": 81.0,
+      "medianTriangles": 70346.0,
+      "resources": {
+        "geometries": 18,
+        "textures": 20,
+        "surfaceTextureBytesEstimate": 3189419,
+        "heapBytes": 11200000,
+        "note": "Texture bytes are a conservative RGBA+mipmap estimate; GPU/VRAM bytes are not exposed by WebGL. Heap is browser-dependent."
+      }
+    },
+    "after": {
+      "canvas": [1440, 566],
+      "samples": 110,
+      "medianFPS": 2.9161123710920265,
+      "medianP95ms": 556.7000000001863,
+      "medianDrawCalls": 81.0,
+      "medianTriangles": 70346.0,
+      "resources": {
+        "geometries": 18,
+        "textures": 20,
+        "surfaceTextureBytesEstimate": 3189419,
+        "heapBytes": 11900000,
+        "note": "Texture bytes are a conservative RGBA+mipmap estimate; GPU/VRAM bytes are not exposed by WebGL. Heap is browser-dependent."
+      }
+    }
+  }
+}
