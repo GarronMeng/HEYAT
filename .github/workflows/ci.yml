@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   checks:
+    name: HYA-001 quality checks
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
