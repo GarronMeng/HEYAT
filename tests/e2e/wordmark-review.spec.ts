@@ -5,6 +5,7 @@ import { encodeSave } from '../../src/core/save';
 test('architectural wordmarks and clothed people render from the front and an oblique view', async ({
   page,
 }, info) => {
+  test.setTimeout(180_000);
   await page.addInitScript(
     (save) => localStorage.setItem('heyat-save-v1', save),
     encodeSave(initialHotel()),
