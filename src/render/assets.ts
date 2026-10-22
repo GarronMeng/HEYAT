@@ -143,8 +143,7 @@ export function createAssets() {
     low.set(source, cheapest);
     originals.set(cheapest, source);
   }
-  const original = (material: T.Material) =>
-    originals.get(material) ?? material;
+  const original = (material: T.Material) => originals.get(material) ?? material;
   const variant = (material: T.Material, quality: Quality): T.Material => {
     const source = original(material);
     return quality === 'low'
@@ -167,7 +166,9 @@ export function createAssets() {
         if (!(object instanceof T.Mesh)) return;
         const material = object.material;
         const source = (m: T.Material) => original(m);
-        const primary = Array.isArray(material) ? source(material[0]!) : source(material);
+        const primary = Array.isArray(material)
+          ? source(material[0]!)
+          : source(material);
         object.material = Array.isArray(material)
           ? material.map((m) => variant(m, quality))
           : variant(material, quality);
