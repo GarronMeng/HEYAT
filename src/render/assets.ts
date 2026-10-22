@@ -143,7 +143,8 @@ export function createAssets() {
     low.set(source, cheapest);
     originals.set(cheapest, source);
   }
-  const original = (material: T.Material) => originals.get(material) ?? material;
+  const original = (material: T.Material) =>
+    originals.get(material) ?? material;
   const variant = (material: T.Material, quality: Quality): T.Material => {
     const source = original(material);
     return quality === 'low'
