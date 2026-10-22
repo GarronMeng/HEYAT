@@ -9,7 +9,10 @@ export const ROOM_STATES = [
   'CLEANING',
 ] as const;
 export type RoomStatus = (typeof ROOM_STATES)[number];
+export const GUEST_KINDS = ['standard', 'explorer', 'globalist'] as const;
+export type GuestKind = (typeof GUEST_KINDS)[number];
 export interface Guest {
+  kind?: GuestKind;
   id: number;
   name: string;
   arrivedAt: number;
@@ -133,6 +136,16 @@ export function assertHotel(state: HotelState): void {
     new Set(state.rooms.map((room) => room.id)).size !== 12
   )
     throw new Error('房间编号不唯一');
+  const guestsToValidate = [
+    ...state.queue,
+    ...state.rooms.flatMap((r) => (r.order ? [r.order.guest] : [])),
+  ];
+  if (
+    guestsToValidate.some(
+      (g) => g.kind !== undefined && !GUEST_KINDS.includes(g.kind),
+    )
+  )
+    throw new Error('客群类型无效');
   if (state.queue.length > 12) throw new Error('队列超限');
   const orders = state.rooms.flatMap((room) =>
     room.order ? [room.order.id] : [],

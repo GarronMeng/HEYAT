@@ -16,6 +16,12 @@ import type { RenderStats } from '../render/perf';
 import { upgradePreview } from './upgradePreview';
 import { recommendationView } from './recommendation';
 import { operationView } from './actionFeedback';
+import {
+  GUEST_TYPES,
+  guestKind,
+  guestProfile,
+  FACILITY_LABELS,
+} from '../core/guestTypes';
 
 const money = (value: number) =>
   `¥${Math.floor(value).toLocaleString('zh-CN')}`;
@@ -138,13 +144,36 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
           `${room.id} 号客房`,
           `第 ${room.floor} 层 · ${room.status === 'LOCKED' ? '等待你的下一次扩建' : '每一扇亮着的窗，都是一段新的旅程'}`,
         ) +
-        `<div class="panel-body"><div class="room-state">${labels[room.status]}</div><div class="hint">${room.remaining > 0 ? `还需 <strong>${room.remaining.toFixed(1)} 秒</strong><br>` : ''}${room.order ? `本次房费 <strong>${money(room.order.revenue)}</strong><br>退房时自动到账` : room.status === 'DIRTY' ? '点击下方「安排清洁」，让客房再次迎客。' : room.status === 'LOCKED' ? '在「规模」升级中开放客房。' : '客房已准备好，等待下一位客人。'}</div><button class="wide" data-action="overview">查看全部客房</button><button class="wide gold" data-action="upgrades">升级与扩建 ↗</button></div>`;
+        `<div class="panel-body"><div class="room-state">${labels[room.status]}</div><div class="hint">${room.remaining > 0 ? `还需 <strong>${room.remaining.toFixed(1)} 秒</strong><br>` : ''}${
+          room.order
+            ? `客群 <strong>${guestProfile(room.order.guest).name}</strong><br>偏好：${guestProfile(
+                room.order.guest,
+              )
+                .needs.map((id) => FACILITY_LABELS[id])
+                .join(
+                  '、',
+                )}<br>本次房费 <strong>${money(room.order.revenue)}</strong><br>退房时自动到账`
+            : room.status === 'DIRTY'
+              ? '点击下方「安排清洁」，让客房再次迎客。'
+              : room.status === 'LOCKED'
+                ? '在「规模」升级中开放客房。'
+                : '客房已准备好，等待下一位客人。'
+        }</div><button class="wide" data-action="overview">查看全部客房</button><button class="wide gold" data-action="upgrades">升级与扩建 ↗</button></div>`;
     } else {
       const rate = rates(state),
         next = recommendedUpgrade(state);
       panel.innerHTML =
         heading('今晚的酒店', '从认真接待每一位客人开始。') +
-        `<div class="panel-body"><div class="hint">标准房费 <strong>${money(rate.price)}</strong> / 单<br>已接待 <strong>${state.completed}</strong> 位客人<br>品牌等级 <strong>${state.levels.brand ?? 0} / 3</strong><br>自动入住 <strong>${rate.autoDesk ? '已启用' : '待解锁'}</strong> · 自动清洁 <strong>${rate.autoClean ? '已启用' : '待解锁'}</strong></div><p class="eyebrow">ROOM DIRECTORY</p><div class="room-list">${state.rooms
+        `<div class="panel-body"><div class="hint">标准房费 <strong>${money(rate.price)}</strong> / 单<br>已接待 <strong>${state.completed}</strong> 位客人<br>品牌等级 <strong>${state.levels.brand ?? 0} / 3</strong><br>自动入住 <strong>${rate.autoDesk ? '已启用' : '待解锁'}</strong> · 自动清洁 <strong>${rate.autoClean ? '已启用' : '待解锁'}</strong></div><section class="guest-segments" aria-label="客群需求">${Object.entries(
+          GUEST_TYPES,
+        )
+          .map(
+            ([kind, profile]) =>
+              `<article class="guest-segment"><b>${profile.name}</b><span>${state.queue.filter((g) => guestKind(g) === kind).length} 位排队</span><p>${profile.description} · 偏好 ${profile.needs.map((id) => FACILITY_LABELS[id]).join('、')}</p></article>`,
+          )
+          .join(
+            '',
+          )}</section><p class="eyebrow">ROOM DIRECTORY</p><div class="room-list">${state.rooms
           .filter((r) => r.floor <= floorCount(state))
           .map(
             (r) =>

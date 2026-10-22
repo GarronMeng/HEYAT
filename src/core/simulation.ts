@@ -9,6 +9,7 @@ import {
   type HotelState,
 } from './model';
 import { buyUpgrade, rates } from './progression';
+import { chooseGuestKind, guestProfile, guestRoomRevenue } from './guestTypes';
 
 export const baseRates = {
   stay: 18,
@@ -28,9 +29,7 @@ export function admit(state: HotelState): CommandResult {
   room.order = {
     id: state.nextOrder++,
     guest,
-    revenue: Math.round(
-      rates(state).price * (guest.vip ? 1 + 0.75 * (state.levels.vip ?? 0) : 1),
-    ),
+    revenue: guestRoomRevenue(rates(state).price, state.levels.vip ?? 0, guest),
   };
   transition(room, 'RESERVED', state, rates(state).checkIn);
   return { ok: true, message: `${guest.name}正在办理 ${room.id} 房入住` };
@@ -52,7 +51,15 @@ export function tick(state: HotelState) {
     room.remaining = Math.max(0, Math.round((room.remaining - STEP) * 10) / 10);
     if (room.remaining > 0) continue;
     if (room.status === 'RESERVED')
-      transition(room, 'OCCUPIED', state, rates(state).stay);
+      transition(
+        room,
+        'OCCUPIED',
+        state,
+        rates(state).stay *
+          (room.order!.guest.kind
+            ? guestProfile(room.order!.guest).stayFactor
+            : 1),
+      );
     else if (room.status === 'OCCUPIED') {
       const order = room.order!;
       state.cash += order.revenue;
@@ -69,14 +76,23 @@ export function tick(state: HotelState) {
       transition(room, 'DIRTY', state);
     } else transition(room, 'AVAILABLE', state);
   }
+  const patient = state.queue.filter(
+    (g) => !g.kind || state.time - g.arrivedAt <= guestProfile(g).patience,
+  );
+  if (state.queue.length !== patient.length) state.eventId++;
+  state.lost += state.queue.length - patient.length;
+  state.queue = patient;
   if (state.time >= state.nextArrival) {
     const names = ['周先生', '陈女士', 'Alex', '林女士', '许先生', 'Jamie'];
+    const kind = chooseGuestKind(state, random(state));
     const guest = {
+      kind,
       id: state.nextGuest++,
       name: names[Math.floor(random(state) * names.length)]!,
       arrivedAt: state.time,
-      vip: random(state) < rates(state).vipChance,
+      vip: kind === 'globalist',
     };
+    state.eventId++;
     if (state.queue.length < 12) state.queue.push(guest);
     else state.lost++;
     state.nextArrival =

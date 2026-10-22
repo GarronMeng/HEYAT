@@ -1,4 +1,10 @@
-import { assertHotel, ROOM_STATES, type Guest, type HotelState } from './model';
+import {
+  assertHotel,
+  GUEST_KINDS,
+  ROOM_STATES,
+  type Guest,
+  type HotelState,
+} from './model';
 
 const numeric = (value: unknown): value is number =>
   typeof value === 'number' &&
@@ -15,7 +21,8 @@ const guest = (value: unknown): value is Guest =>
   typeof value.name === 'string' &&
   value.name.length <= 40 &&
   numeric(value.arrivedAt) &&
-  typeof value.vip === 'boolean';
+  typeof value.vip === 'boolean' &&
+  (value.kind === undefined || GUEST_KINDS.includes(value.kind as never));
 
 /** Deliberately rejects unknown schemas; wall clock is never used to award income. */
 export function decodeSave(raw: string): HotelState {
