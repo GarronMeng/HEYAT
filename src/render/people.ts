@@ -78,7 +78,10 @@ export function createPeople() {
   return {
     group,
     identities: () =>
-      actors.map((a) => ({ mesh: a.mesh.uuid, skeleton: a.mesh.skeleton.uuid })),
+      actors.map((a) => ({
+        mesh: a.mesh.uuid,
+        skeleton: a.mesh.skeleton.uuid,
+      })),
     report: () => motion?.report(),
     dispose() {
       platformGeometry.dispose();
