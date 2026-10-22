@@ -33,6 +33,14 @@ test('stage one repeatable art frame and render budget', async ({
   await page
     .locator('canvas')
     .screenshot({ path: info.outputPath('hotel-scene.png') });
+  if (process.env.ART_MOTION) {
+    for (let i = 0; i < 8; i++) {
+      await page.waitForTimeout(300);
+      await page
+        .locator('canvas')
+        .screenshot({ path: info.outputPath(`motion-${i}.png`) });
+    }
+  }
   if (process.env.ART_SAMPLE_MS)
     await page.waitForTimeout(Number(process.env.ART_SAMPLE_MS));
   await page.getByRole('button', { name: '打开设置' }).click();
