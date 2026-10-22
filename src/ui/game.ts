@@ -13,6 +13,7 @@ import {
   upgradeReason,
 } from '../core/progression';
 import type { RenderStats } from '../render/perf';
+import { upgradePreview } from './upgradePreview';
 
 const money = (value: number) =>
   `¥${Math.floor(value).toLocaleString('zh-CN')}`;
@@ -33,6 +34,35 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
   const get = <T extends HTMLElement = HTMLElement>(selector: string) =>
     root.querySelector<T>(selector)!;
   const panel = get('#panel');
+  let opener: HTMLElement | null = null;
+  get('#hud').innerHTML =
+    `<div class="stat"><small>可用资金</small><strong id="cash">¥0</strong></div><div class="stat"><small>累计房费</small><strong id="revenue">¥0</strong></div><div class="stat"><small>入住 / 开放</small><strong id="occupancy">0 / 1</strong></div><div class="stat"><small>品牌等级</small><strong id="brand-level">—</strong></div>`;
+  get('#queue-summary').innerHTML =
+    '<span id="queue-wait"></span><small id="queue-status"></small>';
+  const text = (selector: string, value: string) => {
+    const node = get(selector);
+    if (node.textContent !== value) node.textContent = value;
+  };
+  const syncOpen = () => {
+    panel.classList.toggle('open', open);
+    panel.inert = !open;
+    root
+      .querySelectorAll<HTMLElement>(
+        '[data-action="settings"], #upgrades, .hotel-tab',
+      )
+      .forEach((el) => {
+        el.setAttribute('aria-controls', 'panel');
+        el.setAttribute(
+          'aria-expanded',
+          String(open && el.dataset.action === mode),
+        );
+      });
+  };
+  const close = () => {
+    open = false;
+    syncOpen();
+    if (opener?.isConnected) opener.focus();
+  };
   let mode = 'overview',
     branch = '收益',
     selected = 101,
@@ -47,7 +77,7 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
   const heading = (title: string, copy: string) =>
     `<div class="panel-head"><h2>${title}</h2><button data-action="close" aria-label="关闭面板">×</button></div><p class="panel-copy">${copy}</p>`;
   const drawPanel = () => {
-    if (!state) return;
+    if (!state || !open) return;
     const key = JSON.stringify([
       mode,
       branch,
@@ -66,20 +96,23 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
     if (key === signature) return;
     signature = key;
     const scroll = panel.querySelector('.panel-body')?.scrollTop ?? 0;
+    const focused = panel.contains(document.activeElement)
+      ? (document.activeElement as HTMLElement)
+      : null;
+    const focusAction = focused?.dataset.action,
+      focusValue = focused?.dataset.value,
+      focusSetting = focused?.dataset.setting;
     if (mode === 'upgrades') {
       panel.innerHTML =
-        heading(
-          '让好生意，长大一点',
-          '每次升级都改变酒店的收入、效率或容量。',
-        ) +
-        `<div class="tabs">${['收益', '效率', '规模'].map((item) => `<button data-action="branch" data-value="${item}" class="${item === branch ? 'active' : ''}">${item}</button>`).join('')}</div><div class="panel-body">${UPGRADES.filter(
+        heading('升级与扩建', '每次升级都改变酒店的收入、效率或容量。') +
+        `<div class="tabs">${['收益', '效率', '规模'].map((item) => `<button data-action="branch" data-value="${item}" aria-pressed="${item === branch}" class="${item === branch ? 'active' : ''}">${item}</button>`).join('')}</div><div class="panel-body">${UPGRADES.filter(
           (u) => u.branch === branch,
         )
           .map((u) => {
             const cost = upgradeCost(state, u.id),
               reason = upgradeReason(state, u.id),
               level = state.levels[u.id] ?? 0;
-            return `<article class="upgrade"><h3>${u.name}<small>LV ${level} / ${u.max}</small></h3><p>${u.description}</p><button data-action="buy" data-value="${u.id}" ${reason || state.cash < cost ? 'disabled' : ''}><span>${level === u.max ? '已完成' : money(cost)}</span><span>${level === u.max ? '✓' : '升级 ↗'}</span></button>${reason && level < u.max ? `<span class="reason">${reason}</span>` : !reason && state.cash < cost ? `<span class="reason">还差 ${money(cost - state.cash)}</span>` : ''}</article>`;
+            return `<article class="upgrade"><h3>${u.name}<small>LV ${level} / ${u.max}</small></h3><p>${u.description}</p>${level < u.max ? `<p class="effect">${upgradePreview(state, u.id)}</p>` : ''}<button data-action="buy" data-value="${u.id}" ${reason || state.cash < cost ? 'disabled' : ''}><span>${level === u.max ? '已完成' : money(cost)}</span><span>${level === u.max ? '✓' : '升级 ↗'}</span></button>${reason && level < u.max ? `<span class="reason">${reason}</span>` : !reason && state.cash < cost ? `<span class="reason">还差 ${money(cost - state.cash)}</span>` : ''}</article>`;
           })
           .join('')}</div>`;
     } else if (mode === 'settings') {
@@ -89,11 +122,8 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
         panel.dataset.options !== `${speed}:${paused}:${quality}`
       ) {
         panel.innerHTML =
-          heading(
-            '按你的节奏经营',
-            '离开页面会暂停营业；回到这里，从上次继续。',
-          ) +
-          `<div class="panel-body"><label class="setting">试玩速度<select data-setting="speed" aria-label="试玩速度"><option value="1" ${speed === 1 ? 'selected' : ''}>1× 标准</option><option value="3" ${speed === 3 ? 'selected' : ''}>3× 加速</option></select></label><label class="setting">画面质量<select data-setting="quality" aria-label="画面质量">${['auto', 'high', 'medium', 'low'].map((q, i) => `<option value="${q}" ${q === quality ? 'selected' : ''}>${['自动', '高', '中', '低'][i]}</option>`).join('')}</select></label><button class="wide" data-action="pause">${paused ? '继续营业' : '暂停营业'}</button><button class="wide" data-action="export">导出存档</button><button class="wide" data-action="report">导出性能报告</button><button class="wide" data-action="help">查看玩法</button><button class="wide" data-action="reset">重新开始</button><p class="perf" id="perf"></p><p class="muted">自动画质会在持续低帧率时降低分辨率、人物与城市细节。<br>移动端性能尚未验收<br>MOBILE_PERF_UNVERIFIED</p></div>`;
+          heading('营业设置', '离开页面会暂停营业；回到这里，从上次继续。') +
+          `<div class="panel-body"><label class="setting">试玩速度<select data-setting="speed" aria-label="试玩速度"><option value="1" ${speed === 1 ? 'selected' : ''}>1× 标准</option><option value="3" ${speed === 3 ? 'selected' : ''}>3× 加速</option></select></label><label class="setting">画面质量<select data-setting="quality" aria-label="画面质量">${['auto', 'high', 'medium', 'low'].map((q, i) => `<option value="${q}" ${q === quality ? 'selected' : ''}>${['自动', '高', '中', '低'][i]}</option>`).join('')}</select></label><button class="wide" data-action="pause">${paused ? '继续营业' : '暂停营业'}</button><button class="wide" data-action="export">导出存档</button><button class="wide" data-action="report">导出性能报告</button><button class="wide" data-action="help">查看玩法</button><button class="wide" data-action="reset">重新开始</button><p class="perf" id="perf"></p><p class="muted">自动画质会在持续低帧率时降低分辨率与材质成本。<br>移动端性能尚未验收<br>MOBILE_PERF_UNVERIFIED</p></div>`;
         panel.dataset.options = `${speed}:${paused}:${quality}`;
       }
       const perf = panel.querySelector('#perf');
@@ -112,7 +142,7 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
         next = recommendedUpgrade(state);
       panel.innerHTML =
         heading('今晚的酒店', '从认真接待每一位客人开始。') +
-        `<div class="panel-body"><div class="hint">标准房费 <strong>${money(rate.price)}</strong> / 单<br>已接待 <strong>${state.completed}</strong> 位客人<br>自动入住 <strong>${rate.autoDesk ? '已启用' : '待解锁'}</strong> · 自动清洁 <strong>${rate.autoClean ? '已启用' : '待解锁'}</strong></div><p class="eyebrow">ROOM DIRECTORY</p><div class="room-list">${state.rooms
+        `<div class="panel-body"><div class="hint">标准房费 <strong>${money(rate.price)}</strong> / 单<br>已接待 <strong>${state.completed}</strong> 位客人<br>品牌等级 <strong>${state.levels.brand ?? 0} / 3</strong><br>自动入住 <strong>${rate.autoDesk ? '已启用' : '待解锁'}</strong> · 自动清洁 <strong>${rate.autoClean ? '已启用' : '待解锁'}</strong></div><p class="eyebrow">ROOM DIRECTORY</p><div class="room-list">${state.rooms
           .filter((r) => r.floor <= floorCount(state))
           .map(
             (r) =>
@@ -125,13 +155,29 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
     panel.dataset.mode = mode;
     const body = panel.querySelector('.panel-body');
     if (body) body.scrollTop = scroll;
+    if (focused) {
+      const replacement = [
+        ...panel.querySelectorAll<HTMLElement>('button,select'),
+      ].find((el) =>
+        focusSetting
+          ? el.dataset.setting === focusSetting
+          : el.dataset.action === focusAction &&
+            el.dataset.value === focusValue,
+      );
+      (replacement && !(replacement as HTMLButtonElement).disabled
+        ? replacement
+        : panel
+      ).focus({ preventScroll: true });
+    }
   };
   const show = (next: string) => {
+    if (!open) opener = document.activeElement as HTMLElement;
     mode = next;
     open = true;
     signature = '';
-    panel.classList.add('open');
+    syncOpen();
     drawPanel();
+    panel.focus({ preventScroll: true });
   };
   const click = (event: Event) => {
     const target = (event.target as HTMLElement).closest<HTMLButtonElement>(
@@ -141,8 +187,7 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
     const action = target.dataset.action!,
       value = target.dataset.value;
     if (action === 'close') {
-      open = false;
-      panel.classList.remove('open');
+      close();
       return;
     }
     if (['settings', 'overview', 'upgrades'].includes(action)) {
@@ -172,8 +217,16 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
     if (target.dataset.setting)
       actions.action(target.dataset.setting, target.value);
   };
+  const keydown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape' && open) {
+      event.preventDefault();
+      close();
+    }
+  };
+  root.addEventListener('keydown', keydown);
   root.addEventListener('click', click);
   root.addEventListener('change', change);
+  syncOpen();
   return {
     update(
       next: HotelState,
@@ -185,15 +238,20 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
       ({ speed, paused, quality } = options);
       const goal = currentGoal(state),
         occupied = state.rooms.filter((r) => r.status === 'OCCUPIED').length;
-      get('#hud').innerHTML =
-        `<div class="stat"><small>可用资金</small><strong id="cash">${money(state.cash)}</strong></div><div class="stat"><small>累计房费</small><strong id="revenue">${money(state.revenue)}</strong></div><div class="stat"><small>入住 / 开放客房</small><strong>${occupied}<em>/ ${roomCount(state)}</em></strong></div><div class="stat"><small>品牌等级</small><strong>${'✦'.repeat(state.levels.brand ?? 0) || '—'}</strong></div>`;
-      get('#goal-title').textContent = goal.title;
-      get('#goal-detail').textContent = goal.detail;
+      text('#cash', money(state.cash));
+      text('#revenue', money(state.revenue));
+      text('#occupancy', `${occupied} / ${roomCount(state)}`);
+      text('#brand-level', `${state.levels.brand ?? 0} / 3`);
+      text('#goal-title', goal.title);
+      text('#goal-detail', goal.detail);
       get('#goal-progress').style.width = `${goal.progress * 100}%`;
       get('#clock').textContent =
         `${paused ? '已暂停' : '营业'} ${duration(state.time)}${speed === 3 ? ' · 3×' : ''}`;
-      get('#queue-summary').innerHTML =
-        `<span><strong>${state.queue.length}</strong> 位等待入住</span><small>${state.rooms.filter((r) => r.status === 'DIRTY').length} 间待清洁 · ${rates(state).autoDesk ? '自动接待' : '手动接待'}</small>`;
+      text('#queue-wait', `${state.queue.length} 位等待入住`);
+      text(
+        '#queue-status',
+        `${state.rooms.filter((r) => r.status === 'DIRTY').length} 间待清洁 · ${rates(state).autoDesk ? '自动接待' : '手动接待'}`,
+      );
       get<HTMLButtonElement>('#checkin').disabled =
         paused ||
         !state.queue.length ||
@@ -203,7 +261,29 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
         paused ||
         !state.rooms.some((r) => r.status === 'DIRTY') ||
         state.rooms.some((r) => r.status === 'CLEANING');
-      get('#upgrade-dot').hidden = !recommendedUpgrade(state);
+      const recommendation = recommendedUpgrade(state);
+      get('#upgrade-dot').hidden = !recommendation;
+      const rec = get<HTMLButtonElement>('#recommendation');
+      rec.hidden = !recommendation;
+      if (recommendation) {
+        rec.dataset.value = recommendation.id;
+        text(
+          '#recommendation',
+          `推荐 · ${recommendation.name}  ¥${upgradeCost(state, recommendation.id).toLocaleString('zh-CN')}  ↗`,
+        );
+      }
+      get<HTMLButtonElement>('#checkin').title = paused
+        ? '营业已暂停'
+        : !state.queue.length
+          ? '等待下一位客人'
+          : !state.rooms.some((r) => r.status === 'AVAILABLE')
+            ? '暂无净房，请先安排清洁'
+            : '接待下一位客人';
+      get<HTMLButtonElement>('#clean').title = paused
+        ? '营业已暂停'
+        : !state.rooms.some((r) => r.status === 'DIRTY')
+          ? '当前没有待清洁客房'
+          : '安排一间客房清洁';
       drawPanel();
     },
     selectRoom(id: number) {
@@ -222,9 +302,10 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
     },
     setOpen(value: boolean) {
       open = value;
-      panel.classList.toggle('open', open);
+      syncOpen();
     },
     dispose() {
+      root.removeEventListener('keydown', keydown);
       root.removeEventListener('click', click);
       root.removeEventListener('change', change);
       clearTimeout(toastTimer);
