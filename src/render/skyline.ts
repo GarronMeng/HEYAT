@@ -37,7 +37,8 @@ export function createNightSkyline(): T.CanvasTexture {
     const x = random() * 1024;
     const y = 12 + random() * 240;
     const radius = random() > 0.94 ? 1.2 : 0.5;
-    ctx.fillStyle = random() > 0.3 ? 'rgba(233,224,205,.35)' : 'rgba(159,189,236,.30)';
+    ctx.fillStyle =
+      random() > 0.3 ? 'rgba(233,224,205,.35)' : 'rgba(159,189,236,.30)';
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fill();
