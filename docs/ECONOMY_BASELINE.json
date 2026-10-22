@@ -1,0 +1,884 @@
+[
+  {
+    "policy": "capacity",
+    "seed": 1731,
+    "won": true,
+    "wonAt": 1324.1,
+    "milestones": {
+      "price": 0,
+      "desk": 70,
+      "room": 120,
+      "clean": 141,
+      "bed": 166,
+      "marketing": 266,
+      "autodesk": 291,
+      "luxury": 476,
+      "autoclean": 557,
+      "brand": 586,
+      "vip": 696,
+      "floor": 917
+    },
+    "completed": 303,
+    "revenue": 276598,
+    "samples": [
+      {
+        "time": 1,
+        "cash": 30,
+        "revenue": 0,
+        "rooms": 1
+      },
+      {
+        "time": 31,
+        "cash": 120,
+        "revenue": 90,
+        "rooms": 1
+      },
+      {
+        "time": 61,
+        "cash": 59,
+        "revenue": 200,
+        "rooms": 1
+      },
+      {
+        "time": 91,
+        "cash": 33,
+        "revenue": 334,
+        "rooms": 1
+      },
+      {
+        "time": 121,
+        "cash": 61,
+        "revenue": 602,
+        "rooms": 2
+      },
+      {
+        "time": 151,
+        "cash": 149,
+        "revenue": 870,
+        "rooms": 2
+      },
+      {
+        "time": 181,
+        "cash": 177,
+        "revenue": 1138,
+        "rooms": 2
+      },
+      {
+        "time": 211,
+        "cash": 180,
+        "revenue": 1466,
+        "rooms": 2
+      },
+      {
+        "time": 241,
+        "cash": 43,
+        "revenue": 2045,
+        "rooms": 3
+      },
+      {
+        "time": 271,
+        "cash": 105,
+        "revenue": 2817,
+        "rooms": 3
+      },
+      {
+        "time": 301,
+        "cash": 184,
+        "revenue": 3396,
+        "rooms": 3
+      },
+      {
+        "time": 331,
+        "cash": 428,
+        "revenue": 4168,
+        "rooms": 3
+      },
+      {
+        "time": 361,
+        "cash": 343,
+        "revenue": 5355,
+        "rooms": 4
+      },
+      {
+        "time": 391,
+        "cash": 19,
+        "revenue": 6391,
+        "rooms": 4
+      },
+      {
+        "time": 421,
+        "cash": 543,
+        "revenue": 7686,
+        "rooms": 4
+      },
+      {
+        "time": 451,
+        "cash": 924,
+        "revenue": 9240,
+        "rooms": 4
+      },
+      {
+        "time": 481,
+        "cash": 7,
+        "revenue": 10785,
+        "rooms": 4
+      },
+      {
+        "time": 511,
+        "cash": 1025,
+        "revenue": 13083,
+        "rooms": 4
+      },
+      {
+        "time": 541,
+        "cash": 488,
+        "revenue": 15681,
+        "rooms": 4
+      },
+      {
+        "time": 571,
+        "cash": 886,
+        "revenue": 18279,
+        "rooms": 4
+      },
+      {
+        "time": 601,
+        "cash": 1484,
+        "revenue": 20877,
+        "rooms": 4
+      },
+      {
+        "time": 631,
+        "cash": 3023,
+        "revenue": 24645,
+        "rooms": 4
+      },
+      {
+        "time": 661,
+        "cash": 2747,
+        "revenue": 28269,
+        "rooms": 4
+      },
+      {
+        "time": 691,
+        "cash": 3948,
+        "revenue": 33197,
+        "rooms": 4
+      },
+      {
+        "time": 721,
+        "cash": 4676,
+        "revenue": 38125,
+        "rooms": 4
+      },
+      {
+        "time": 751,
+        "cash": 8900,
+        "revenue": 42349,
+        "rooms": 4
+      },
+      {
+        "time": 781,
+        "cash": 2128,
+        "revenue": 47277,
+        "rooms": 4
+      },
+      {
+        "time": 811,
+        "cash": 9338,
+        "revenue": 54487,
+        "rooms": 4
+      },
+      {
+        "time": 841,
+        "cash": 2506,
+        "revenue": 60255,
+        "rooms": 4
+      },
+      {
+        "time": 871,
+        "cash": 11570,
+        "revenue": 69319,
+        "rooms": 4
+      },
+      {
+        "time": 901,
+        "cash": 19810,
+        "revenue": 77559,
+        "rooms": 4
+      },
+      {
+        "time": 931,
+        "cash": 1499,
+        "revenue": 83327,
+        "rooms": 5
+      },
+      {
+        "time": 961,
+        "cash": 2240,
+        "revenue": 93627,
+        "rooms": 8
+      },
+      {
+        "time": 991,
+        "cash": 11600,
+        "revenue": 110587,
+        "rooms": 8
+      },
+      {
+        "time": 1021,
+        "cash": 28419,
+        "revenue": 127406,
+        "rooms": 8
+      },
+      {
+        "time": 1051,
+        "cash": 46680,
+        "revenue": 145667,
+        "rooms": 8
+      },
+      {
+        "time": 1081,
+        "cash": 60615,
+        "revenue": 159602,
+        "rooms": 8
+      },
+      {
+        "time": 1111,
+        "cash": 5070,
+        "revenue": 173057,
+        "rooms": 8
+      },
+      {
+        "time": 1141,
+        "cash": 11976,
+        "revenue": 187954,
+        "rooms": 9
+      },
+      {
+        "time": 1171,
+        "cash": 10803,
+        "revenue": 199967,
+        "rooms": 10
+      },
+      {
+        "time": 1201,
+        "cash": 4425,
+        "revenue": 215345,
+        "rooms": 11
+      },
+      {
+        "time": 1231,
+        "cash": 19322,
+        "revenue": 230242,
+        "rooms": 11
+      },
+      {
+        "time": 1261,
+        "cash": 3897,
+        "revenue": 243697,
+        "rooms": 11
+      },
+      {
+        "time": 1291,
+        "cash": 21961,
+        "revenue": 261761,
+        "rooms": 11
+      },
+      {
+        "time": 1321,
+        "cash": 35699,
+        "revenue": 275499,
+        "rooms": 11
+      }
+    ]
+  },
+  {
+    "policy": "revenue",
+    "seed": 1731,
+    "won": true,
+    "wonAt": 1340.1,
+    "milestones": {
+      "price": 0,
+      "clean": 70,
+      "bed": 119,
+      "desk": 143,
+      "room": 215,
+      "marketing": 308,
+      "autodesk": 316,
+      "luxury": 513,
+      "autoclean": 593,
+      "brand": 638,
+      "vip": 727,
+      "floor": 943
+    },
+    "completed": 297,
+    "revenue": 276425,
+    "samples": [
+      {
+        "time": 1,
+        "cash": 30,
+        "revenue": 0,
+        "rooms": 1
+      },
+      {
+        "time": 31,
+        "cash": 120,
+        "revenue": 90,
+        "rooms": 1
+      },
+      {
+        "time": 61,
+        "cash": 59,
+        "revenue": 200,
+        "rooms": 1
+      },
+      {
+        "time": 91,
+        "cash": 13,
+        "revenue": 334,
+        "rooms": 1
+      },
+      {
+        "time": 121,
+        "cash": 41,
+        "revenue": 602,
+        "rooms": 1
+      },
+      {
+        "time": 151,
+        "cash": 45,
+        "revenue": 766,
+        "rooms": 1
+      },
+      {
+        "time": 181,
+        "cash": 209,
+        "revenue": 930,
+        "rooms": 1
+      },
+      {
+        "time": 211,
+        "cash": 48,
+        "revenue": 1094,
+        "rooms": 1
+      },
+      {
+        "time": 241,
+        "cash": 27,
+        "revenue": 1673,
+        "rooms": 2
+      },
+      {
+        "time": 271,
+        "cash": 17,
+        "revenue": 2059,
+        "rooms": 3
+      },
+      {
+        "time": 301,
+        "cash": 276,
+        "revenue": 2638,
+        "rooms": 3
+      },
+      {
+        "time": 331,
+        "cash": 5,
+        "revenue": 3217,
+        "rooms": 3
+      },
+      {
+        "time": 361,
+        "cash": 472,
+        "revenue": 4212,
+        "rooms": 3
+      },
+      {
+        "time": 391,
+        "cash": 128,
+        "revenue": 5140,
+        "rooms": 4
+      },
+      {
+        "time": 421,
+        "cash": 524,
+        "revenue": 6176,
+        "rooms": 4
+      },
+      {
+        "time": 451,
+        "cash": 587,
+        "revenue": 7730,
+        "rooms": 4
+      },
+      {
+        "time": 481,
+        "cash": 968,
+        "revenue": 9284,
+        "rooms": 4
+      },
+      {
+        "time": 511,
+        "cash": 1018,
+        "revenue": 10496,
+        "rooms": 4
+      },
+      {
+        "time": 541,
+        "cash": 909,
+        "revenue": 13127,
+        "rooms": 4
+      },
+      {
+        "time": 571,
+        "cash": 99,
+        "revenue": 15292,
+        "rooms": 4
+      },
+      {
+        "time": 601,
+        "cash": 930,
+        "revenue": 18323,
+        "rooms": 4
+      },
+      {
+        "time": 631,
+        "cash": 866,
+        "revenue": 20488,
+        "rooms": 4
+      },
+      {
+        "time": 661,
+        "cash": 2902,
+        "revenue": 24524,
+        "rooms": 4
+      },
+      {
+        "time": 691,
+        "cash": 2626,
+        "revenue": 28148,
+        "rooms": 4
+      },
+      {
+        "time": 721,
+        "cash": 3123,
+        "revenue": 32372,
+        "rooms": 4
+      },
+      {
+        "time": 751,
+        "cash": 4555,
+        "revenue": 38004,
+        "rooms": 4
+      },
+      {
+        "time": 781,
+        "cash": 8779,
+        "revenue": 42228,
+        "rooms": 4
+      },
+      {
+        "time": 811,
+        "cash": 1303,
+        "revenue": 46452,
+        "rooms": 4
+      },
+      {
+        "time": 841,
+        "cash": 8273,
+        "revenue": 53422,
+        "rooms": 4
+      },
+      {
+        "time": 871,
+        "cash": 2883,
+        "revenue": 60632,
+        "rooms": 4
+      },
+      {
+        "time": 901,
+        "cash": 13183,
+        "revenue": 70932,
+        "rooms": 4
+      },
+      {
+        "time": 931,
+        "cash": 21423,
+        "revenue": 79172,
+        "rooms": 4
+      },
+      {
+        "time": 961,
+        "cash": 2569,
+        "revenue": 86176,
+        "rooms": 6
+      },
+      {
+        "time": 991,
+        "cash": 2845,
+        "revenue": 101832,
+        "rooms": 8
+      },
+      {
+        "time": 1021,
+        "cash": 18773,
+        "revenue": 117760,
+        "rooms": 8
+      },
+      {
+        "time": 1051,
+        "cash": 37034,
+        "revenue": 136021,
+        "rooms": 8
+      },
+      {
+        "time": 1081,
+        "cash": 52411,
+        "revenue": 151398,
+        "rooms": 8
+      },
+      {
+        "time": 1111,
+        "cash": 67788,
+        "revenue": 166775,
+        "rooms": 8
+      },
+      {
+        "time": 1141,
+        "cash": 5694,
+        "revenue": 181672,
+        "rooms": 9
+      },
+      {
+        "time": 1171,
+        "cash": 3560,
+        "revenue": 192724,
+        "rooms": 10
+      },
+      {
+        "time": 1201,
+        "cash": 15573,
+        "revenue": 204737,
+        "rooms": 10
+      },
+      {
+        "time": 1231,
+        "cash": 9195,
+        "revenue": 220115,
+        "rooms": 11
+      },
+      {
+        "time": 1261,
+        "cash": 24092,
+        "revenue": 235012,
+        "rooms": 11
+      },
+      {
+        "time": 1291,
+        "cash": 10247,
+        "revenue": 250047,
+        "rooms": 11
+      },
+      {
+        "time": 1321,
+        "cash": 27283,
+        "revenue": 267083,
+        "rooms": 11
+      }
+    ]
+  },
+  {
+    "policy": "service",
+    "seed": 1731,
+    "won": true,
+    "wonAt": 1344.1,
+    "milestones": {
+      "price": 0,
+      "clean": 45,
+      "desk": 70,
+      "room": 166,
+      "bed": 215,
+      "marketing": 287,
+      "autodesk": 311,
+      "luxury": 519,
+      "autoclean": 583,
+      "brand": 612,
+      "vip": 729,
+      "floor": 947
+    },
+    "completed": 303,
+    "revenue": 275997,
+    "samples": [
+      {
+        "time": 1,
+        "cash": 30,
+        "revenue": 0,
+        "rooms": 1
+      },
+      {
+        "time": 31,
+        "cash": 120,
+        "revenue": 90,
+        "rooms": 1
+      },
+      {
+        "time": 61,
+        "cash": 50,
+        "revenue": 200,
+        "rooms": 1
+      },
+      {
+        "time": 91,
+        "cash": 0,
+        "revenue": 310,
+        "rooms": 1
+      },
+      {
+        "time": 121,
+        "cash": 49,
+        "revenue": 530,
+        "rooms": 1
+      },
+      {
+        "time": 151,
+        "cash": 183,
+        "revenue": 664,
+        "rooms": 1
+      },
+      {
+        "time": 181,
+        "cash": 77,
+        "revenue": 798,
+        "rooms": 2
+      },
+      {
+        "time": 211,
+        "cash": 183,
+        "revenue": 1229,
+        "rooms": 2
+      },
+      {
+        "time": 241,
+        "cash": 66,
+        "revenue": 1748,
+        "rooms": 3
+      },
+      {
+        "time": 271,
+        "cash": 285,
+        "revenue": 2327,
+        "rooms": 3
+      },
+      {
+        "time": 301,
+        "cash": 194,
+        "revenue": 2906,
+        "rooms": 3
+      },
+      {
+        "time": 331,
+        "cash": 466,
+        "revenue": 3678,
+        "rooms": 3
+      },
+      {
+        "time": 361,
+        "cash": 249,
+        "revenue": 4643,
+        "rooms": 4
+      },
+      {
+        "time": 391,
+        "cash": 76,
+        "revenue": 5728,
+        "rooms": 4
+      },
+      {
+        "time": 421,
+        "cash": 392,
+        "revenue": 6764,
+        "rooms": 4
+      },
+      {
+        "time": 451,
+        "cash": 2,
+        "revenue": 8318,
+        "rooms": 4
+      },
+      {
+        "time": 481,
+        "cash": 526,
+        "revenue": 10004,
+        "rooms": 4
+      },
+      {
+        "time": 511,
+        "cash": 691,
+        "revenue": 11609,
+        "rooms": 4
+      },
+      {
+        "time": 541,
+        "cash": 209,
+        "revenue": 13707,
+        "rooms": 4
+      },
+      {
+        "time": 571,
+        "cash": 679,
+        "revenue": 15872,
+        "rooms": 4
+      },
+      {
+        "time": 601,
+        "cash": 1510,
+        "revenue": 18903,
+        "rooms": 4
+      },
+      {
+        "time": 631,
+        "cash": 2195,
+        "revenue": 21588,
+        "rooms": 4
+      },
+      {
+        "time": 661,
+        "cash": 71,
+        "revenue": 25420,
+        "rooms": 4
+      },
+      {
+        "time": 691,
+        "cash": 2991,
+        "revenue": 28340,
+        "rooms": 4
+      },
+      {
+        "time": 721,
+        "cash": 3419,
+        "revenue": 32668,
+        "rooms": 4
+      },
+      {
+        "time": 751,
+        "cash": 4147,
+        "revenue": 37596,
+        "rooms": 4
+      },
+      {
+        "time": 781,
+        "cash": 8371,
+        "revenue": 41820,
+        "rooms": 4
+      },
+      {
+        "time": 811,
+        "cash": 1599,
+        "revenue": 46748,
+        "rooms": 4
+      },
+      {
+        "time": 841,
+        "cash": 8599,
+        "revenue": 53748,
+        "rooms": 4
+      },
+      {
+        "time": 871,
+        "cash": 3827,
+        "revenue": 61576,
+        "rooms": 4
+      },
+      {
+        "time": 901,
+        "cash": 10831,
+        "revenue": 68580,
+        "rooms": 4
+      },
+      {
+        "time": 931,
+        "cash": 19071,
+        "revenue": 76820,
+        "rooms": 4
+      },
+      {
+        "time": 961,
+        "cash": 217,
+        "revenue": 83824,
+        "rooms": 6
+      },
+      {
+        "time": 991,
+        "cash": 6033,
+        "revenue": 97420,
+        "rooms": 8
+      },
+      {
+        "time": 1021,
+        "cash": 16147,
+        "revenue": 115134,
+        "rooms": 8
+      },
+      {
+        "time": 1051,
+        "cash": 34408,
+        "revenue": 133395,
+        "rooms": 8
+      },
+      {
+        "time": 1081,
+        "cash": 48343,
+        "revenue": 147330,
+        "rooms": 8
+      },
+      {
+        "time": 1111,
+        "cash": 65162,
+        "revenue": 164149,
+        "rooms": 8
+      },
+      {
+        "time": 1141,
+        "cash": 1626,
+        "revenue": 177604,
+        "rooms": 9
+      },
+      {
+        "time": 1171,
+        "cash": 1895,
+        "revenue": 191059,
+        "rooms": 10
+      },
+      {
+        "time": 1201,
+        "cash": 15831,
+        "revenue": 204995,
+        "rooms": 10
+      },
+      {
+        "time": 1231,
+        "cash": 7530,
+        "revenue": 218450,
+        "rooms": 11
+      },
+      {
+        "time": 1261,
+        "cash": 20024,
+        "revenue": 230944,
+        "rooms": 11
+      },
+      {
+        "time": 1291,
+        "cash": 7621,
+        "revenue": 247421,
+        "rooms": 11
+      },
+      {
+        "time": 1321,
+        "cash": 23008,
+        "revenue": 262808,
+        "rooms": 11
+      }
+    ]
+  }
+]
