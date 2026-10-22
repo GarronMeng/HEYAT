@@ -960,3 +960,84 @@ footer {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Feedback paints over the scene; it never adds rows to the dock. */
+#checkin,
+#clean {
+  position: relative;
+  overflow: hidden;
+  height: 46px;
+  padding: 5px 8px;
+}
+.action-label {
+  display: block;
+  line-height: 17px;
+}
+.operation-meta {
+  display: block;
+  font-size: 10px;
+  line-height: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.operation-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #8dd8c1;
+  transform: scaleX(var(--operation-progress, 0));
+  transform-origin: left;
+  pointer-events: none;
+}
+#feedback-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 12;
+  overflow: hidden;
+}
+.feedback-chip {
+  position: absolute;
+  max-width: min(280px, calc(100vw - 16px));
+  padding: 8px 12px;
+  border: 1px solid #95d9bb66;
+  border-radius: 10px;
+  background: #102c3af2;
+  color: #d8f1db;
+  font-size: 12px;
+  line-height: 18px;
+  box-shadow: 0 4px 15px #0005;
+  animation: receipt-rise 2.2s both;
+}
+@keyframes receipt-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  15%,
+  75% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feedback-chip {
+    animation-name: receipt-still;
+  }
+}
+@keyframes receipt-still {
+  0%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
