@@ -95,7 +95,9 @@ test('persistent characters survive 3x, pause, LOD and context restoration', asy
   await page.getByRole('button', { name: '关闭面板' }).click();
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole('button', { name: '重置视角' }).click();
-  await page.screenshot({ path: info.outputPath('characters-phone-layout.png') });
+  await page.screenshot({
+    path: info.outputPath('characters-phone-layout.png'),
+  });
   console.log(
     'N06_MEASURED',
     JSON.stringify({

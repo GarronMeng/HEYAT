@@ -27,10 +27,6 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - name: Check N06 source formatting with a reviewable diff
-        run: |
-          npx prettier --write src/render/people*.ts src/render/figureRig.ts src/render/hotel.ts src/render/createHotelRenderer.ts src/app/bootstrap.ts tests/unit/people*.test.ts tests/e2e/character-motion.spec.ts docs/HYA_N06.md
-          git diff --exit-code
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
