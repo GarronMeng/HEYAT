@@ -1,7 +1,8 @@
 import * as T from 'three';
 import type { HotelState } from '../core/model';
 import { bindFigure, figureGeometry, type Role } from './figureRig';
-import { peoplePoses } from './peoplePoses';
+import { animateFigure } from './peopleAnimation';
+import { PeopleMotion } from './peopleMotion';
 
 function createDistantSprite() {
   const canvas = document.createElement('canvas');
@@ -34,6 +35,9 @@ function createDistantSprite() {
 
 export function createPeople() {
   const group = new T.Group();
+  let motion: PeopleMotion | undefined;
+  const platformGeometry = new T.BoxGeometry(0.82, 0.08, 0.82);
+  const platformMaterial = new T.MeshLambertMaterial({ color: '#3e4855' });
   const roles: Role[] = [
     'reception',
     'reception',
@@ -42,61 +46,59 @@ export function createPeople() {
     'guest',
     'guest',
   ];
+  const variants = [0, 1, 0, 0, 0, 1];
   const geometry = new Map(
-    [...new Set(roles)].map((role) => [role, figureGeometry(role)]),
+    roles.map((role, i) => [
+      `${role}:${variants[i]}`,
+      figureGeometry(role, variants[i]),
+    ]),
   );
   const material = new T.MeshLambertMaterial({ vertexColors: true });
   const sprite = createDistantSprite();
-  const actors = roles.map((role) => {
+  const actors = roles.map((role, i) => {
     const lod = new T.LOD();
-    const rig = bindFigure(geometry.get(role)!, material);
+    const rig = bindFigure(geometry.get(`${role}:${variants[i]}`)!, material);
     lod.addLevel(rig.mesh, 0);
     // Reuse the same coloured silhouette for a readable unanimated middle LOD.
-    lod.addLevel(new T.Mesh(geometry.get(role)!, material), 32);
+    lod.addLevel(
+      new T.Mesh(geometry.get(`${role}:${variants[i]}`)!, material),
+      32,
+      0.15,
+    );
     const far = new T.Sprite(sprite.material);
     far.position.y = 0.6;
     far.scale.set(0.43, 1.22, 1);
-    lod.addLevel(far, 46);
+    lod.addLevel(far, 46, 0.15);
     group.add(lod);
-    return { lod, ...rig };
+    const platform = new T.Mesh(platformGeometry, platformMaterial);
+    platform.visible = false;
+    group.add(platform);
+    return { lod, platform, ...rig };
   });
   return {
     group,
+    report: () => motion?.report(),
     dispose() {
+      platformGeometry.dispose();
+      platformMaterial.dispose();
       actors.forEach((actor) => actor.mesh.skeleton.dispose());
       geometry.forEach((g) => g.dispose());
       material.dispose();
       sprite.texture.dispose();
       sprite.material.dispose();
     },
-    update(state: HotelState, time: number) {
-      const poses = peoplePoses(state, time);
+    update(state: HotelState, realDelta: number, active = true) {
+      motion ??= new PeopleMotion(state);
+      const poses = motion.update(state, realDelta, active);
+      const time = motion.time;
       actors.forEach((actor, i) => {
         const pose = poses[i]!;
         actor.lod.position.set(pose.x, pose.y, pose.z);
         actor.lod.rotation.y = pose.facing;
-        actor.bones.forEach((b) => b.rotation.set(0, 0, 0));
-        const phase = time * 2.6 + i,
-          stride = pose.action === 'walk' ? Math.sin(phase) * 0.25 : 0;
-        actor.bones[7]!.rotation.x = stride;
-        actor.bones[9]!.rotation.x = -stride;
-        actor.bones[8]!.rotation.x = Math.max(0, -stride) * 0.8;
-        actor.bones[10]!.rotation.x = Math.max(0, stride) * 0.8;
-        actor.bones[3]!.rotation.x = -stride * 0.65;
-        actor.bones[5]!.rotation.x = stride * 0.65;
-        actor.bones[1]!.rotation.y = Math.sin(time * 0.9 + i) * 0.025;
-        actor.bones[2]!.rotation.y = Math.sin(time * 0.6 + i) * 0.09;
-        if (pose.action === 'reception') {
-          actor.bones[5]!.rotation.x = -0.55;
-          actor.bones[6]!.rotation.x = -0.65 + Math.sin(time * 1.8) * 0.1;
-          actor.bones[3]!.rotation.x = -0.22;
-        }
-        if (pose.action === 'clean') {
-          actor.bones[1]!.rotation.x = 0.25;
-          actor.bones[3]!.rotation.x = -0.65 + Math.sin(time * 2.5) * 0.18;
-          actor.bones[4]!.rotation.x = -0.35;
-          actor.bones[5]!.rotation.x = -0.4;
-        }
+        actor.platform.visible = pose.riding === true;
+        actor.platform.position.set(pose.x, pose.y - 0.04, pose.z);
+        actor.lod.scale.setScalar([1, 0.96, 1.04, 0.96, 1.02, 0.96][i]!);
+        animateFigure(actor.bones, pose, time, i);
         // Orthographic zoom changes apparent size without changing camera distance.
         // Renderer sets this world-units-per-pixel hint rather than relying only on distance.
         const simplified = group.userData.simple === true;
