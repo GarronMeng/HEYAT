@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-22",
+  "fixture": "101/102 open, simulation paused, same camera/viewport, High, no other browsers during sampling",
+  "sampling": "120 s requested per run; rolling frame sampler snapshots summarized after 10 s warm-up. Not a hardware FPS acceptance test; sampler excludes intervals >=2000 ms.",
+  "mobileStatus": "MOBILE_PERF_UNVERIFIED",
+  "desktopHardwareStatus": "UNVERIFIED",
+  "reports": {
+    "before": {
+      "sampleCount": 108,
+      "sampleWindowMs": [10932, 124876],
+      "internalResolution": [1440, 776],
+      "medianSampleFps": 8.45,
+      "medianSampleP95Ms": 217.0,
+      "drawCalls": 83,
+      "triangles": 21912,
+      "geometries": 6,
+      "resources": null,
+      "device": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+      "gpu": "SwiftShader configured by the same Playwright launch flags; unmasked renderer not captured in baseline"
+    },
+    "after": {
+      "sampleCount": 104,
+      "sampleWindowMs": [10028, 141731],
+      "internalResolution": [1440, 776],
+      "medianSampleFps": 2.02,
+      "medianSampleP95Ms": 1005.7,
+      "drawCalls": 105,
+      "triangles": 57380,
+      "geometries": 9,
+      "resources": {
+        "geometries": 9,
+        "textures": 19,
+        "surfaceTextureBytesEstimate": 3189419,
+        "heapBytes": 10000000,
+        "note": "Texture bytes are a conservative RGBA+mipmap estimate; GPU/VRAM bytes are not exposed by WebGL. Heap is browser-dependent."
+      },
+      "device": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+      "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+    }
+  }
+}

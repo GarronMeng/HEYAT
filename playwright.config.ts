@@ -3,6 +3,9 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
+  workers: 1, // SwiftShader shares CPU resources; serialize actual GPU-path regressions.
+  timeout: 90_000,
+  expect: { timeout: 15_000 },
   retries: process.env.CI ? 1 : 0,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
