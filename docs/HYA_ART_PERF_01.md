@@ -1,6 +1,6 @@
 # HYA-ART-PERF-01 · WebGL 材质与画质分层
 
-基线：未合并的 `feat/premium-diorama-stage-1`（PR #7）。本任务只处理渲染器与材质，不修改经济模拟、客房数量、存档或 UI 经营接口。
+基线：未合并的 `feat/premium-diorama-stage-1`（PR #7）。本任务优化渲染器与材质，并修正低 FPS 下应用层经营计时被人为减慢的问题；不修改经济模拟规则、客房数量、存档格式或 UI 经营接口。
 
 ## 已实施
 
@@ -11,6 +11,8 @@
 - 切换画质时对共享材质实例切换，而不是重建全部房间几何。新增环境恢复逻辑，使 WebGL context restore 只重建当前所需的反射资源。
 - 性能报告增加 `visualTier` 字段，说明着色路径、法线、环境反射与装饰层的启用状态。
 - 新增 Playwright E2E 回归：循环切换 Low/Medium/High/Low，检查运行时诊断、WebGL 入口状态以及现金/房间/营业收入保持不变。
+- 调整应用层帧时间：正常慢帧按实际墙钟补足模拟时间，只有超过五秒的异常停顿限制追赶量；页面隐藏、暂停与 WebGL 上下文丢失仍会停止推进，避免重新出现离线收益。
+- 性能采样改为纳入大于 2 秒的卡顿帧，不再系统性美化软件渲染 FPS/P95；新增单元测试覆盖两个修复。
 
 ## 约束与验收边界
 
@@ -29,4 +31,4 @@
 
 ## 执行记录
 
-源代码分支 `perf/staged-webgl-quality-profiles`；真实测试结果以 GitHub Actions 和 PR 最终记录为准。尚无 iPhone 实机验收，严禁标记 `MOBILE_PERF_VERIFIED`。
+源代码分支 `perf/staged-webgl-quality-profiles`（堆叠在 PR #7）；真实测试结果以 GitHub Actions 和 PR 最终记录为准。尚无 iPhone 实机验收，严禁标记 `MOBILE_PERF_VERIFIED`。
