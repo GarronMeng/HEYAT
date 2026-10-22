@@ -1,0 +1,233 @@
+import {
+  floorCount,
+  roomCount,
+  type HotelState,
+  type RoomStatus,
+} from '../core/model';
+import {
+  currentGoal,
+  rates,
+  recommendedUpgrade,
+  UPGRADES,
+  upgradeCost,
+  upgradeReason,
+} from '../core/progression';
+import type { RenderStats } from '../render/perf';
+
+const money = (value: number) =>
+  `¥${Math.floor(value).toLocaleString('zh-CN')}`;
+const duration = (value: number) =>
+  `${String(Math.floor(value / 60)).padStart(2, '0')}:${String(Math.floor(value % 60)).padStart(2, '0')}`;
+const labels: Record<RoomStatus, string> = {
+  LOCKED: '待改造',
+  AVAILABLE: '净房',
+  RESERVED: '办理入住',
+  OCCUPIED: '入住中',
+  DIRTY: '待清洁',
+  CLEANING: '清洁中',
+};
+export interface ViewActions {
+  action(name: string, value?: string): void;
+}
+export function createGameView(root: HTMLElement, actions: ViewActions) {
+  const get = <T extends HTMLElement = HTMLElement>(selector: string) =>
+    root.querySelector<T>(selector)!;
+  const panel = get('#panel');
+  let mode = 'overview',
+    branch = '收益',
+    selected = 101,
+    open = false;
+  let state: HotelState,
+    stats: RenderStats,
+    signature = '',
+    toastTimer = 0;
+  let speed = 1,
+    paused = false,
+    quality = 'auto';
+  const heading = (title: string, copy: string) =>
+    `<div class="panel-head"><h2>${title}</h2><button data-action="close" aria-label="关闭面板">×</button></div><p class="panel-copy">${copy}</p>`;
+  const drawPanel = () => {
+    if (!state) return;
+    const key = JSON.stringify([
+      mode,
+      branch,
+      selected,
+      Math.floor(state.cash),
+      state.eventId,
+      mode === 'room'
+        ? Math.ceil(state.rooms.find((r) => r.id === selected)?.remaining ?? 0)
+        : 0,
+      paused,
+      speed,
+      quality,
+      mode === 'settings' ? Math.round(stats?.fps ?? 0) : 0,
+    ]);
+    // Keep focused controls and scrolled content stable between economic events.
+    if (key === signature) return;
+    signature = key;
+    const scroll = panel.querySelector('.panel-body')?.scrollTop ?? 0;
+    if (mode === 'upgrades') {
+      panel.innerHTML =
+        heading(
+          '让好生意，长大一点',
+          '每次升级都改变酒店的收入、效率或容量。',
+        ) +
+        `<div class="tabs">${['收益', '效率', '规模'].map((item) => `<button data-action="branch" data-value="${item}" class="${item === branch ? 'active' : ''}">${item}</button>`).join('')}</div><div class="panel-body">${UPGRADES.filter(
+          (u) => u.branch === branch,
+        )
+          .map((u) => {
+            const cost = upgradeCost(state, u.id),
+              reason = upgradeReason(state, u.id),
+              level = state.levels[u.id] ?? 0;
+            return `<article class="upgrade"><h3>${u.name}<small>LV ${level} / ${u.max}</small></h3><p>${u.description}</p><button data-action="buy" data-value="${u.id}" ${reason || state.cash < cost ? 'disabled' : ''}><span>${level === u.max ? '已完成' : money(cost)}</span><span>${level === u.max ? '✓' : '升级 ↗'}</span></button>${reason && level < u.max ? `<span class="reason">${reason}</span>` : !reason && state.cash < cost ? `<span class="reason">还差 ${money(cost - state.cash)}</span>` : ''}</article>`;
+          })
+          .join('')}</div>`;
+    } else if (mode === 'settings') {
+      // Settings are updated only when the user changes an option, keeping keyboard focus intact.
+      if (
+        panel.dataset.mode !== mode ||
+        panel.dataset.options !== `${speed}:${paused}:${quality}`
+      ) {
+        panel.innerHTML =
+          heading(
+            '按你的节奏经营',
+            '离开页面会暂停营业；回到这里，从上次继续。',
+          ) +
+          `<div class="panel-body"><label class="setting">试玩速度<select data-setting="speed" aria-label="试玩速度"><option value="1" ${speed === 1 ? 'selected' : ''}>1× 标准</option><option value="3" ${speed === 3 ? 'selected' : ''}>3× 加速</option></select></label><label class="setting">画面质量<select data-setting="quality" aria-label="画面质量">${['auto', 'high', 'medium', 'low'].map((q, i) => `<option value="${q}" ${q === quality ? 'selected' : ''}>${['自动', '高', '中', '低'][i]}</option>`).join('')}</select></label><button class="wide" data-action="pause">${paused ? '继续营业' : '暂停营业'}</button><button class="wide" data-action="export">导出存档</button><button class="wide" data-action="report">导出性能报告</button><button class="wide" data-action="help">查看玩法</button><button class="wide" data-action="reset">重新开始</button><p class="perf" id="perf"></p><p class="muted">自动画质会在持续低帧率时降低分辨率、人物与城市细节。<br>移动端性能尚未验收<br>MOBILE_PERF_UNVERIFIED</p></div>`;
+        panel.dataset.options = `${speed}:${paused}:${quality}`;
+      }
+      const perf = panel.querySelector('#perf');
+      if (perf && stats)
+        perf.textContent = `${stats.fps.toFixed(0)} FPS · ${stats.quality}\np50 ${stats.p50.toFixed(1)} / p95 ${stats.p95.toFixed(1)} ms\n${stats.calls} draws · ${stats.triangles.toLocaleString()} triangles\n${stats.width} × ${stats.height}`;
+    } else if (mode === 'room') {
+      const room = state.rooms.find((r) => r.id === selected)!;
+      panel.innerHTML =
+        heading(
+          `${room.id} 号客房`,
+          `第 ${room.floor} 层 · ${room.status === 'LOCKED' ? '等待你的下一次扩建' : '每一扇亮着的窗，都是一段新的旅程'}`,
+        ) +
+        `<div class="panel-body"><div class="room-state">${labels[room.status]}</div><div class="hint">${room.remaining > 0 ? `还需 <strong>${room.remaining.toFixed(1)} 秒</strong><br>` : ''}${room.order ? `本次房费 <strong>${money(room.order.revenue)}</strong><br>退房时自动到账` : room.status === 'DIRTY' ? '点击下方「安排清洁」，让客房再次迎客。' : room.status === 'LOCKED' ? '在「规模」升级中开放客房。' : '客房已准备好，等待下一位客人。'}</div><button class="wide" data-action="overview">查看全部客房</button><button class="wide gold" data-action="upgrades">升级与扩建 ↗</button></div>`;
+    } else {
+      const rate = rates(state),
+        next = recommendedUpgrade(state);
+      panel.innerHTML =
+        heading('今晚的酒店', '从认真接待每一位客人开始。') +
+        `<div class="panel-body"><div class="hint">标准房费 <strong>${money(rate.price)}</strong> / 单<br>已接待 <strong>${state.completed}</strong> 位客人<br>自动入住 <strong>${rate.autoDesk ? '已启用' : '待解锁'}</strong> · 自动清洁 <strong>${rate.autoClean ? '已启用' : '待解锁'}</strong></div><p class="eyebrow">ROOM DIRECTORY</p><div class="room-list">${state.rooms
+          .filter((r) => r.floor <= floorCount(state))
+          .map(
+            (r) =>
+              `<button data-action="room" data-value="${r.id}"><b>${r.id}</b><span>${labels[r.status]}</span></button>`,
+          )
+          .join(
+            '',
+          )}</div><p class="muted">绿灯净房 · 金灯入住 · 橙灯待清洁 · 蓝灯清洁中</p>${next ? `<button class="wide gold" data-action="recommend" data-value="${next.id}">可升级：${next.name} ↗</button>` : ''}<p class="muted">接待 → 入住 → 退房收款 → 清洁<br>短短一夜，让酒店慢慢长大。</p></div>`;
+    }
+    panel.dataset.mode = mode;
+    const body = panel.querySelector('.panel-body');
+    if (body) body.scrollTop = scroll;
+  };
+  const show = (next: string) => {
+    mode = next;
+    open = true;
+    signature = '';
+    panel.classList.add('open');
+    drawPanel();
+  };
+  const click = (event: Event) => {
+    const target = (event.target as HTMLElement).closest<HTMLButtonElement>(
+      '[data-action]',
+    );
+    if (!target || target.disabled) return;
+    const action = target.dataset.action!,
+      value = target.dataset.value;
+    if (action === 'close') {
+      open = false;
+      panel.classList.remove('open');
+      return;
+    }
+    if (['settings', 'overview', 'upgrades'].includes(action)) {
+      show(action);
+      return;
+    }
+    if (action === 'room') {
+      selected = Number(value);
+      show('room');
+      return;
+    }
+    if (action === 'branch') {
+      branch = value!;
+      signature = '';
+      drawPanel();
+      return;
+    }
+    if (action === 'recommend') {
+      branch = UPGRADES.find((u) => u.id === value)!.branch;
+      show('upgrades');
+      return;
+    }
+    actions.action(action, value);
+  };
+  const change = (event: Event) => {
+    const target = event.target as HTMLSelectElement;
+    if (target.dataset.setting)
+      actions.action(target.dataset.setting, target.value);
+  };
+  root.addEventListener('click', click);
+  root.addEventListener('change', change);
+  return {
+    update(
+      next: HotelState,
+      renderStats: RenderStats,
+      options: { speed: number; paused: boolean; quality: string },
+    ) {
+      state = next;
+      stats = renderStats;
+      ({ speed, paused, quality } = options);
+      const goal = currentGoal(state),
+        occupied = state.rooms.filter((r) => r.status === 'OCCUPIED').length;
+      get('#hud').innerHTML =
+        `<div class="stat"><small>可用资金</small><strong id="cash">${money(state.cash)}</strong></div><div class="stat"><small>累计房费</small><strong id="revenue">${money(state.revenue)}</strong></div><div class="stat"><small>入住 / 开放客房</small><strong>${occupied}<em>/ ${roomCount(state)}</em></strong></div><div class="stat"><small>品牌等级</small><strong>${'✦'.repeat(state.levels.brand ?? 0) || '—'}</strong></div>`;
+      get('#goal-title').textContent = goal.title;
+      get('#goal-detail').textContent = goal.detail;
+      get('#goal-progress').style.width = `${goal.progress * 100}%`;
+      get('#clock').textContent =
+        `${paused ? '已暂停' : '营业'} ${duration(state.time)}${speed === 3 ? ' · 3×' : ''}`;
+      get('#queue-summary').innerHTML =
+        `<span><strong>${state.queue.length}</strong> 位等待入住</span><small>${state.rooms.filter((r) => r.status === 'DIRTY').length} 间待清洁 · ${rates(state).autoDesk ? '自动接待' : '手动接待'}</small>`;
+      get<HTMLButtonElement>('#checkin').disabled =
+        paused ||
+        !state.queue.length ||
+        !state.rooms.some((r) => r.status === 'AVAILABLE') ||
+        state.rooms.some((r) => r.status === 'RESERVED');
+      get<HTMLButtonElement>('#clean').disabled =
+        paused ||
+        !state.rooms.some((r) => r.status === 'DIRTY') ||
+        state.rooms.some((r) => r.status === 'CLEANING');
+      get('#upgrade-dot').hidden = !recommendedUpgrade(state);
+      drawPanel();
+    },
+    selectRoom(id: number) {
+      selected = id;
+      show('room');
+    },
+    toast(message: string) {
+      const el = get('#toast');
+      el.textContent = message;
+      el.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => (el.hidden = true), 3200);
+    },
+    saveStatus(message: string) {
+      get('#save-status').textContent = message;
+    },
+    setOpen(value: boolean) {
+      open = value;
+      panel.classList.toggle('open', open);
+    },
+    dispose() {
+      root.removeEventListener('click', click);
+      root.removeEventListener('change', change);
+      clearTimeout(toastTimer);
+    },
+  };
+}

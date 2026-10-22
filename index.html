@@ -6,28 +6,26 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <meta name="theme-color" content="#0c1c2b" />
+    <meta name="theme-color" content="#091a2a" />
     <meta
       name="description"
-      content="HEYAT HOTEL 工程启动页 · 短流程主动增量酒店经营游戏"
+      content="经营一间城市精品酒店。从第一位客人开始，点亮属于你的城市夜色。"
     />
-    <title>HEYAT HOTEL · 工程启动页</title>
+    <title>HEYAT HOTEL · 夜色中的一间好酒店</title>
     <style>
       html {
         color: #f2e6d2;
-        background: #0c1c2b;
+        background: #091a2a;
         font-family: system-ui, sans-serif;
       }
       body {
         margin: 0;
-        padding: 24px;
       }
       [hidden] {
         display: none !important;
       }
       button {
         min-height: 44px;
-        padding: 0 20px;
         cursor: pointer;
       }
     </style>
@@ -37,39 +35,97 @@
     <div id="app">
       <header class="masthead">
         <a class="brand" href="./" aria-label="HEYAT HOTEL 首页"
-          >HEYAT<span>HOTEL</span></a
+          >HEYAT<span>H O T E L</span></a
         >
-        <span class="build-tag">开发版本 · HYA-001</span>
-      </header>
-      <main>
-        <section class="intro" aria-labelledby="page-title">
-          <p class="eyebrow">一座酒店的起点</p>
-          <h1 id="page-title">夜幕降临，<br />故事即将开始。</h1>
-          <p class="intro-copy">
-            从第一位客人，到一座自动运转的酒店。<br />HEYAT 的旅程，从这里开始。
-          </p>
-        </section>
-        <div id="viewport" class="viewport">
-          <canvas id="scene" aria-label="实时 WebGL 2 工程标记" hidden></canvas>
-          <p class="scene-caption">工程渲染标记 / 酒店场景将在下一阶段搭建</p>
+        <div class="top-copy">
+          一间好酒店，一座不眠城。<small>FIRST PLAYABLE · 01</small>
         </div>
+        <button
+          class="icon-button"
+          data-action="settings"
+          aria-label="打开设置"
+        >
+          ⚙
+        </button>
+      </header>
+      <main class="game">
+        <div class="hud" id="hud"></div>
+        <section class="goal-card">
+          <span class="eyebrow">今晚的小目标</span>
+          <h1 id="goal-title">迎接第一位客人</h1>
+          <p id="goal-detail"></p>
+          <div class="track"><i id="goal-progress"></i></div>
+        </section>
+        <div id="viewport">
+          <canvas
+            id="scene"
+            aria-label="可旋转的 3D 精品酒店，点击客房查看房态"
+            hidden
+          ></canvas>
+        </div>
+        <div class="scene-tools">
+          <button data-action="camera" aria-label="重置视角">↺ 视角</button
+          ><span>拖动旋转 · 滚轮缩放 · 点击客房</span>
+        </div>
+        <aside id="panel" class="panel" aria-label="酒店管理"></aside>
+        <section class="action-dock" aria-label="经营操作">
+          <div class="queue-summary" id="queue-summary"></div>
+          <button class="primary" data-action="checkin" id="checkin">
+            接待入住
+          </button>
+          <button data-action="clean" id="clean">安排清洁</button>
+          <button data-action="upgrades" class="gold" id="upgrades">
+            升级与扩建 <span id="upgrade-dot"></span>
+          </button>
+        </section>
+        <div
+          id="toast"
+          class="toast"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
         <section
           class="status-card"
           aria-labelledby="boot-status"
           aria-live="polite"
           aria-busy="true"
         >
-          <span class="status-dot" aria-hidden="true"></span>
-          <p class="eyebrow">启动状态</p>
+          <p class="eyebrow">HEYAT HOTEL</p>
           <h2 id="boot-status">正在加载页面…</h2>
           <p id="boot-detail">正在准备本地渲染模块，请稍候。</p>
-          <button id="retry" type="button" hidden>重新加载</button>
-          <noscript>请启用 JavaScript 后重新加载，以运行 3D 页面。</noscript>
+          <button id="retry" type="button" hidden>重新加载</button
+          ><noscript>请启用 JavaScript 后重新加载。</noscript>
         </section>
+        <dialog id="welcome">
+          <p class="eyebrow">THE FIRST NIGHT</p>
+          <h2>今晚，欢迎<br />第一位客人。</h2>
+          <p>从一间亮着灯的客房开始，<br />把小小的梦想，盖进城市夜色里。</p>
+          <ol>
+            <li>接待客人，退房时获得房费</li>
+            <li>安排清洁，让下一位客人入住</li>
+            <li>升级、自动化，再向上扩建</li>
+          </ol>
+          <p class="muted">
+            约 20–30 分钟的一轮经营 · 可随时离开，自动保存<br />设置中可切换 3×
+            试玩速度
+          </p>
+          <button class="primary" data-action="start">开始营业 →</button>
+        </dialog>
+        <dialog id="ending">
+          <p class="eyebrow">A PLACE TO CALL YOURS</p>
+          <h2>这座城市，<br />记住了你的酒店。</h2>
+          <p id="ending-detail"></p>
+          <p>
+            从第一位客人，到十二扇亮着的窗。<br />谢谢你，让这一夜有了归处。
+          </p>
+          <button class="primary" data-action="continue">继续看看酒店</button
+          ><button data-action="reset">开启新的一夜</button>
+        </dialog>
       </main>
       <footer>
-        <span>工程基础页 · 经营系统尚未启用</span>
-        <span>移动端性能尚未验收 <code>MOBILE_PERF_UNVERIFIED</code></span>
+        <span id="save-status">本地自动保存</span
+        ><span id="clock">营业 00:00</span><span>移动端性能尚未验收</span>
       </footer>
     </div>
     <script id="entry" type="module" src="/src/main.ts"></script>
