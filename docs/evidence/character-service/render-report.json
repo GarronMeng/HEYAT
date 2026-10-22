@@ -8,16 +8,8 @@
   },
   "mobileStatus": "MOBILE_PERF_UNVERIFIED",
   "camera": {
-    "position": [
-      15.08338377794136,
-      6.099643953245997,
-      14.40082432260184
-    ],
-    "target": [
-      0,
-      3,
-      0
-    ],
+    "position": [15.08338377794136, 6.099643953245997, 14.40082432260184],
+    "target": [0, 3, 0],
     "zoom": 1.2183277032555386,
     "fullOrbit": true,
     "pan": true
