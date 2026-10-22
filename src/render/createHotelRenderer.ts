@@ -147,7 +147,6 @@ export function createRenderer(
     camera.top = span / 2;
     camera.bottom = -span / 2;
     camera.updateProjectionMatrix();
-
   };
   const setQuality = (next: Quality, auto = false) => {
     const changed = quality !== next;
@@ -158,7 +157,6 @@ export function createRenderer(
       syncEnvironment();
       assets.applyQuality(hotel.group, quality);
       assets.applyQuality(people.group, quality);
-
     }
     applySize();
   };
