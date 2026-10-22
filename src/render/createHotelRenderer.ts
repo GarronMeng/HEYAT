@@ -88,13 +88,13 @@ export function createRenderer(
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(0, 2.6, 0);
   controls.enableDamping = true;
-  controls.enablePan = false;
-  controls.minAzimuthAngle = 0.34;
-  controls.maxAzimuthAngle = 0.85;
-  controls.minPolarAngle = 0.8;
-  controls.maxPolarAngle = 1.15;
-  controls.minZoom = 0.65;
-  controls.maxZoom = 2.1;
+  controls.enablePan = true;
+  controls.minAzimuthAngle = -Infinity;
+  controls.maxAzimuthAngle = Infinity;
+  controls.minPolarAngle = 0.12;
+  controls.maxPolarAngle = Math.PI / 2 - 0.04;
+  controls.minZoom = 0.35;
+  controls.maxZoom = 4;
   controls.rotateSpeed = 0.45;
   controls.zoomSpeed = 0.7;
   scene.add(new T.HemisphereLight('#7e9bbf', '#433628', 0.7));
@@ -162,20 +162,53 @@ export function createRenderer(
     applySize();
   };
   const resetCamera = () => {
+    // Flush residual damping before restoring an exact, reproducible view.
+    controls.enableDamping = false;
+    controls.update();
     camera.position.set(9.5, 8.5, 18);
     controls.target.set(0, 2.2 + floorCount(state) * 0.8, 0);
+    const offset = camera.position.clone().sub(controls.target);
+    const spherical = new T.Spherical().setFromVector3(offset);
+    spherical.phi = 1.15;
+    camera.position
+      .copy(controls.target)
+      .add(offset.setFromSpherical(spherical));
     camera.zoom = 1;
     camera.updateProjectionMatrix();
     controls.update();
+    controls.enableDamping = true;
   };
   const raycaster = new T.Raycaster(),
     pointer = new T.Vector2();
-  let down = { x: 0, y: 0 };
+  let down: { x: number; y: number } | null = null;
+  const activePointers = new Set<number>();
+  let gesture = false;
   const pointerDown = (event: PointerEvent) => {
-    down = { x: event.clientX, y: event.clientY };
+    activePointers.add(event.pointerId);
+    if (activePointers.size > 1) gesture = true;
+    if (event.button === 0) down = { x: event.clientX, y: event.clientY };
+  };
+  const pointerCancel = (event: PointerEvent) => {
+    activePointers.delete(event.pointerId);
+    down = null;
+    gesture = activePointers.size > 0;
   };
   const pointerUp = (event: PointerEvent) => {
-    if (Math.hypot(event.clientX - down.x, event.clientY - down.y) > 7) return;
+    activePointers.delete(event.pointerId);
+    if (gesture || event.button !== 0) {
+      if (!activePointers.size) {
+        gesture = false;
+        down = null;
+      }
+      return;
+    }
+    const start = down;
+    down = null;
+    if (
+      !start ||
+      Math.hypot(event.clientX - start.x, event.clientY - start.y) > 7
+    )
+      return;
     const rect = canvas.getBoundingClientRect();
     pointer.set(
       ((event.clientX - rect.left) / rect.width) * 2 - 1,
@@ -187,6 +220,7 @@ export function createRenderer(
   };
   canvas.addEventListener('pointerdown', pointerDown);
   canvas.addEventListener('pointerup', pointerUp);
+  canvas.addEventListener('pointercancel', pointerCancel);
   return {
     resize(w, h, pixelRatio) {
       width = Math.max(1, Math.floor(w));
@@ -208,6 +242,13 @@ export function createRenderer(
       device: navigator.userAgent,
       viewport: { width, height, dpr },
       mobileStatus: 'MOBILE_PERF_UNVERIFIED',
+      camera: {
+        position: camera.position.toArray(),
+        target: controls.target.toArray(),
+        zoom: camera.zoom,
+        fullOrbit: true,
+        pan: controls.enablePan,
+      },
       visualTier: {
         quality,
         shader: quality === 'low' ? 'Lambert' : 'Standard',
@@ -257,9 +298,11 @@ export function createRenderer(
         hotel = createHotel(assets, state);
         assets.applyQuality(hotel.group, quality);
         scene.add(hotel.group);
+        const firstAssembly = previousKey === '';
         previousKey = key;
         controls.target.y = 2.2 + floorCount(state) * 0.8;
         applySize();
+        if (firstAssembly) resetCamera();
       }
       hotel.update(state);
       people.group.userData.simple = camera.zoom < 0.8;
@@ -284,6 +327,7 @@ export function createRenderer(
       controls.dispose();
       canvas.removeEventListener('pointerdown', pointerDown);
       canvas.removeEventListener('pointerup', pointerUp);
+      canvas.removeEventListener('pointercancel', pointerCancel);
       disposeGroup(hotel.group);
       hotel.proxyMaterial.dispose();
       skyline.dispose();
