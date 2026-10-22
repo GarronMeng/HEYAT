@@ -76,8 +76,8 @@ export function createPeople() {
         actor.lod.position.set(pose.x, pose.y, pose.z);
         actor.lod.rotation.y = pose.facing;
         actor.bones.forEach((b) => b.rotation.set(0, 0, 0));
-        const phase = time * 5.4 + i,
-          stride = pose.action === 'walk' ? Math.sin(phase) * 0.38 : 0;
+        const phase = time * 2.6 + i,
+          stride = pose.action === 'walk' ? Math.sin(phase) * 0.25 : 0;
         actor.bones[7]!.rotation.x = stride;
         actor.bones[9]!.rotation.x = -stride;
         actor.bones[8]!.rotation.x = Math.max(0, -stride) * 0.8;
