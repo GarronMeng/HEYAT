@@ -5,7 +5,7 @@ import { createRenderer, type SceneRenderer } from '../render/createRenderer';
 import type { Quality } from '../render/perf';
 import { createStatusView } from '../ui/status';
 import { createGameView } from '../ui/game';
-import { createRenderLoop } from './renderLoop';
+import { createRenderLoop, simulationFrameDelta } from './renderLoop';
 
 export const SAVE_KEY = 'heyat-save-v1';
 export function bootstrap() {
@@ -163,7 +163,7 @@ export function bootstrap() {
   const loop = createRenderLoop(
     () => {
       const now = performance.now();
-      const delta = last ? Math.min((now - last) / 1000, 0.25) : 0;
+      const delta = simulationFrameDelta(last, now);
       last = now;
       try {
         if (!paused && !modal && !lost) simulation.advance(delta * speed);
