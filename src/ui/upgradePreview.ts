@@ -1,3 +1,4 @@
+import { FACILITIES, facilityOffer } from '../core/facilities';
 import type { HotelState } from '../core/model';
 import { floorCount, roomCount } from '../core/model';
 import { rates } from '../core/progression';
@@ -9,6 +10,12 @@ export function upgradePreview(state: HotelState, id: string): string {
   };
   const before = rates(state),
     after = rates(next);
+  if (FACILITIES.some((f) => f.id === id)) {
+    const key = id as 'breakfast' | 'gym' | 'lounge' | 'rooftop';
+    const a = facilityOffer(state, key),
+      b = facilityOffer(next, key);
+    return `服务位 ${a.capacity} → ${b.capacity} · 单次 ¥${b.fee} · ${b.duration.toFixed(1)} 秒`;
+  }
   if (['price', 'bed', 'luxury', 'brand'].includes(id))
     return `标准房费 ¥${before.price} → ¥${after.price} / 单`;
   if (id === 'desk')

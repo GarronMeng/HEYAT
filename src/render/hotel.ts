@@ -1,5 +1,6 @@
+import { buildFacilityModules } from './facilityModules';
 import * as T from 'three';
-import { floorCount, type HotelState } from '../core/model';
+import { FACILITY_IDS, floorCount, type HotelState } from '../core/model';
 import { Batch, textSprite, hotelWordmark, type Assets } from './assets';
 import { buildLobby, buildRoom, interiorBuilder } from './interiors';
 
@@ -121,6 +122,10 @@ export function createHotel(assets: Assets, state: HotelState) {
   roofSign.scale.set(2.9, 0.58, 1);
   roofSign.position.set(-0.5, roofY + 0.46, -1.515);
   group.add(roofSign);
+  group.userData.facilities = FACILITY_IDS.filter(
+    (id) => (state.levels[id] ?? 0) > 0,
+  );
+  group.add(buildFacilityModules(batch, state, roofY));
   group.add(batch.finish());
   return {
     group,

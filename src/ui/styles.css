@@ -1057,3 +1057,15 @@ footer {
   line-height: 1.6;
   font-size: 12px;
 }
+
+.facility-status {
+  border-top: 1px solid var(--line);
+  padding: 12px 0;
+  font-size: 13px;
+}
+.facility-status p {
+  color: #abc6d3;
+  line-height: 1.6;
+  margin: 6px 0 0;
+  font-size: 12px;
+}
