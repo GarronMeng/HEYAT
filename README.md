@@ -53,7 +53,7 @@ src/
 public/boot.js            # 独立于 ES 模块的入口加载失败/超时/重试兜底
 tests/unit/               # 渲染循环和画布尺寸边界
 tests/e2e/                # 生产构建首帧、网络、失败、重试和横竖屏
-.github/workflows/ci.yml  # PR 与 main push 自动检查，无部署/合并动作
+.github/workflows/ci.yml  # PR、main/初始化分支 push 与手动检查，无部署/合并动作
 ```
 
 依赖方向由 `app` 组装 `core`、`render` 和 `ui`。ESLint 禁止 `core` 引入 Three.js、DOM、渲染/UI/装配层，禁止 UI/渲染层反向引入 `app`。渲染循环不推进经营时间、不修改状态；HYA-004 再定义指令、reducer、固定时间步与事件。

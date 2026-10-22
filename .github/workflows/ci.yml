@@ -3,7 +3,9 @@ name: HEYAT CI
 on:
   pull_request:
   push:
-    branches: [main]
+    # Keep the bootstrap branch independently checkable before its first merge.
+    branches: [main, chore/heyat-bootstrap]
+  workflow_dispatch:
 
 permissions:
   contents: read

@@ -50,7 +50,7 @@ E2E 覆盖：真实 WebGL 2 上下文及已绘制像素（非空 canvas）、页
 
 ### CI
 
-`.github/workflows/ci.yml` 在 PR 及 main push 执行 npm ci、lint、typecheck、unit、build、Chromium E2E；只读 contents 权限，不部署、不合并。浏览器证据上传为 `heyat-browser-evidence`，保留 14 天。远端实际结果以本 PR 的 Checks 和最终 PR 描述中的 run 链接为准；本地通过不等于远端已通过。
+`.github/workflows/ci.yml` 在 PR、main/初始化分支 push 及手动触发时执行 npm ci、lint、typecheck、unit、build、Chromium E2E；初始化分支支持独立检查，避免完全依赖首次 PR 事件。只读 contents 权限，不部署、不合并。浏览器证据上传为 `heyat-browser-evidence`，保留 14 天。远端实际结果以本 PR 的 Checks 和最终 PR 描述中的运行状态为准；本地通过不等于远端已通过。首次创建 PR 后 API 尚未返回运行记录，因此增加初始化分支 push 触发后再次核验。
 
 ## 体积、风险与验收边界
 
