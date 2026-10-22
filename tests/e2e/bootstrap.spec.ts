@@ -39,6 +39,7 @@ test('production build renders a real WebGL 2 frame without external requests', 
   expect(pixels.slice(0, 3).some((value) => value > 30)).toBe(true);
   expect(external).toEqual([]);
   expect(errors).toEqual([]);
+  await page.getByRole('button', { name: '开始营业' }).click();
   await page.screenshot({
     path: testInfo.outputPath('bootstrap-desktop.png'),
     fullPage: true,
