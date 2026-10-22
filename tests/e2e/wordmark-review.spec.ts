@@ -17,6 +17,27 @@ test('architectural wordmarks and clothed people render from the front and an ob
   await page.getByRole('button', { name: '暂停营业', exact: true }).click();
   await page.getByLabel('画面质量').selectOption('high');
   await page.getByRole('button', { name: '关闭面板' }).click();
+  // Resize clears a WebGL drawing buffer; wait for actual rendered frames.
+  const pixel = await page
+    .locator('#scene')
+    .evaluate(async (canvas: HTMLCanvasElement) => {
+      await new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      );
+      const gl = canvas.getContext('webgl2')!,
+        rgba = new Uint8Array(4);
+      gl.readPixels(
+        Math.floor(canvas.width / 2),
+        Math.floor(canvas.height / 2),
+        1,
+        1,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        rgba,
+      );
+      return [...rgba];
+    });
+  expect(Math.max(...pixel.slice(0, 3))).toBeGreaterThan(20);
   await page.screenshot({ path: info.outputPath('default.png') });
   const box = (await page.locator('#scene').boundingBox())!;
   const x = box.x + box.width * 0.6,
