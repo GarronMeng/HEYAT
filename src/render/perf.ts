@@ -31,7 +31,8 @@ export class FrameMetrics {
     now: number,
     stats: Omit<RenderStats, 'fps' | 'p50' | 'p95'>,
   ): RenderStats {
-    if (milliseconds > 0 && milliseconds < 2000) {
+    // Include multi-second GPU stalls: excluding them made FPS and P95 too optimistic.
+    if (Number.isFinite(milliseconds) && milliseconds > 0) {
       this.frames.push(milliseconds);
       if (this.frames.length > 240) this.frames.shift();
     }
