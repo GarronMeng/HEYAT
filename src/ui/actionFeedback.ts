@@ -1,7 +1,11 @@
 import type { HotelState, Receipt } from '../core/model';
 export function operationView(state: HotelState, action: 'checkin' | 'clean') {
   const status = action === 'checkin' ? 'RESERVED' : 'CLEANING';
-  const active = state.rooms.find((r) => r.status === status);
+  const jobs = state.rooms.filter((r) => r.status === status);
+  const active = jobs.reduce<(typeof jobs)[number] | undefined>(
+    (a, b) => (!a || b.remaining < a.remaining ? b : a),
+    undefined,
+  );
   const elapsed = active ? Math.max(0, state.time - active.changedAt) : 0;
   const total = elapsed + (active?.remaining ?? 0);
   return active
@@ -9,7 +13,7 @@ export function operationView(state: HotelState, action: 'checkin' | 'clean') {
         busy: true,
         remaining: active.remaining,
         progress: total > 0 ? Math.min(1, elapsed / total) : 1,
-        label: `${action === 'checkin' ? '办理' : '清洁'} ${active.remaining.toFixed(1)}s`,
+        label: `${action === 'checkin' ? '办理' : '清洁'} ${active.remaining.toFixed(1)}s${jobs.length > 1 ? ` · ${jobs.length}组工作中` : ''}`,
         expected: action === 'checkin' ? (active.order?.revenue ?? 0) : 0,
       }
     : {

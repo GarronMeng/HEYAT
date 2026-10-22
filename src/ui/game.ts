@@ -1,3 +1,4 @@
+import { cleaningSlots, demandChannels, demandDiagnosis } from '../core/demand';
 import { FACILITIES, facilitySummary } from '../core/facilities';
 import {
   floorCount,
@@ -183,7 +184,7 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
           })
           .join(
             '',
-          )}</section><p class="eyebrow">ROOM DIRECTORY</p><div class="room-list">${state.rooms
+          )}</section><section class="hint" aria-label="供需诊断"><b>供需诊断</b><p>${demandDiagnosis(state)}</p>咨询渠道 / 分钟：路过 ${(demandChannels(state).walkIn * 60).toFixed(1)} · 预订 ${(demandChannels(state).bookings * 60).toFixed(1)} · 企业 ${(demandChannels(state).corporate * 60).toFixed(1)} · 回头 ${(demandChannels(state).repeat * 60).toFixed(1)}<br>咨询 ${state.demand?.offered ?? 0} · 转化 ${state.demand?.converted ?? 0} · 未转化 ${state.demand?.rejected ?? 0}<br>满队离开 ${state.demand?.queueLost ?? 0} · 等待超时 ${state.demand?.patienceLost ?? 0}<br>近期入住率 ${Math.round((state.demand?.utilisation ?? 0) * 100)}% · 清洁班组 ${cleaningSlots(state)}<br>回头口碑 ${Math.round((state.demand?.loyalty ?? 0) * 100)}%（实际退房与设施履约积累）</section><p class="eyebrow">ROOM DIRECTORY</p><div class="room-list">${state.rooms
           .filter((r) => r.floor <= floorCount(state))
           .map(
             (r) =>
@@ -301,7 +302,8 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
       get<HTMLButtonElement>('#clean').disabled =
         paused ||
         !state.rooms.some((r) => r.status === 'DIRTY') ||
-        state.rooms.some((r) => r.status === 'CLEANING');
+        state.rooms.filter((r) => r.status === 'CLEANING').length >=
+          cleaningSlots(state);
       const recommendation = recommendedUpgrade(state);
       get('#upgrade-dot').hidden = !recommendation;
       const rec = get<HTMLButtonElement>('#recommendation');

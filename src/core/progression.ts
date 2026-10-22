@@ -1,3 +1,4 @@
+import { cleaningSlots, leadInterval } from './demand';
 import { FACILITIES, facilityReason } from './facilities';
 import { FACILITY_LABELS } from './guestTypes';
 import { guestMix } from './guestTypes';
@@ -26,7 +27,7 @@ export const UPGRADES: readonly Upgrade[] = [
     id: 'price',
     branch: '收益',
     name: '一夜好眠的定价',
-    description: '每单房费提高 22%，不降低客流',
+    description: '每单房费提高 22%；价格需匹配品质，影响咨询转化',
     base: 90,
     growth: 1.9,
     max: 6,
@@ -90,7 +91,7 @@ export const UPGRADES: readonly Upgrade[] = [
     id: 'clean',
     branch: '效率',
     name: '客房管家的魔法',
-    description: '缩短清洁周期，脏房更快变净房',
+    description: '缩短清洁周期；2/4级分别增加一支并行清洁班组',
     base: 180,
     growth: 2,
     max: 4,
@@ -110,7 +111,7 @@ export const UPGRADES: readonly Upgrade[] = [
     id: 'marketing',
     branch: '规模',
     name: '这家酒店有点东西',
-    description: '增加到店需求；注意前台和净房瓶颈',
+    description: '建立预订渠道；关注转化、前台与净房瓶颈',
     base: 350,
     growth: 2.2,
     max: 4,
@@ -191,7 +192,8 @@ export function rates(state: HotelState) {
     checkIn: 2 / (1 + 0.35 * level(state, 'desk')),
     clean: 5 / (1 + 0.3 * level(state, 'clean')),
     stay: 18 / (1 + 0.12 * level(state, 'luxury')),
-    arrival: 6 / (1 + 0.3 * level(state, 'marketing')),
+    arrival: leadInterval(state),
+    cleanSlots: cleaningSlots(state),
     autoDesk: !!level(state, 'autodesk'),
     autoClean: !!level(state, 'autoclean'),
     vipChance: guestMix(state).globalist,
@@ -264,7 +266,16 @@ export function currentGoal(state: HotelState): {
   };
 }
 export function recommendedUpgrade(state: HotelState): Upgrade | undefined {
+  const needDemand =
+    roomCount(state) >= 4 &&
+    state.queue.length < 2 &&
+    (state.demand?.utilisation ?? 0) < 0.65;
+  const dirty = state.rooms.filter((r) => r.status === 'DIRTY').length;
   const order = [
+    ...(dirty >= 2 ? ['clean', 'autoclean'] : []),
+    ...(needDemand
+      ? ['marketing', 'brand', 'breakfast', 'gym', 'lounge', 'rooftop']
+      : []),
     'autodesk',
     'autoclean',
     'room',

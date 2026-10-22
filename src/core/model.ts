@@ -56,7 +56,18 @@ export interface Receipt {
   at: number;
   guest: string;
 }
+export interface DemandState {
+  offered: number;
+  converted: number;
+  rejected: number;
+  queueLost: number;
+  patienceLost: number;
+  loyalty: number;
+  reputation: number;
+  utilisation: number;
+}
 export interface HotelState {
+  demand?: DemandState;
   facilityStats?: Partial<Record<FacilityId, FacilityStats>>;
   version: 1;
   time: number;

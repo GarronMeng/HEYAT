@@ -111,6 +111,20 @@ export function decodeSave(raw: string): HotelState {
     (value.wonAt !== null && !numeric(value.wonAt))
   )
     throw new Error('进度存档损坏');
+  if (value.demand !== undefined) {
+    const d = value.demand;
+    if (
+      !object(d) ||
+      ['offered', 'converted', 'rejected', 'queueLost', 'patienceLost'].some(
+        (k) => !integer(d[k]),
+      ) ||
+      ['loyalty', 'reputation', 'utilisation'].some(
+        (k) => !numeric(d[k]) || (d[k] as number) > 1,
+      ) ||
+      d.offered !== (d.converted as number) + (d.rejected as number)
+    )
+      throw new Error('需求统计损坏');
+  }
   if (value.facilityStats !== undefined) {
     if (!object(value.facilityStats)) throw new Error('设施统计损坏');
     for (const [id, stats] of Object.entries(value.facilityStats))
