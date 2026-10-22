@@ -1,6 +1,19 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createRenderLoop } from '../../src/app/renderLoop';
+import {
+  createRenderLoop,
+  simulationFrameDelta,
+} from '../../src/app/renderLoop';
 import { viewportSize } from '../../src/render/viewport';
+
+describe('frame delta handling under low FPS', () => {
+  it('does not slow hotel revenue when GPU rendering takes multiple seconds', () => {
+    expect(simulationFrameDelta(1000, 2000)).toBe(1);
+    expect(simulationFrameDelta(1000, 3500)).toBe(2.5);
+    expect(simulationFrameDelta(1000, 9000)).toBe(5);
+    expect(simulationFrameDelta(0, 9000)).toBe(0);
+    expect(simulationFrameDelta(3000, 2000)).toBe(0);
+  });
+});
 
 describe('render lifecycle', () => {
   it('never creates duplicate loops and cancels pending work when hidden/disposed', () => {
