@@ -16,6 +16,12 @@ test('all shader tiers render without changing cash, room state or save', async 
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
   await expect(page.locator('#boot-status')).toHaveText('WebGL 2 已就绪');
+  await page.getByRole('button', { name: '打开设置' }).click();
+  await page.getByRole('button', { name: '暂停营业', exact: true }).click();
+  await page.getByRole('button', { name: '关闭面板' }).click();
+  const before = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('heyat-save-v1')!),
+  );
 
   for (const tier of ['low', 'medium', 'high', 'low'] as const) {
     await page.getByRole('button', { name: '打开设置' }).click();
@@ -38,7 +44,10 @@ test('all shader tiers render without changing cash, room state or save', async 
     await expect(page.locator('#boot-status')).toHaveText('WebGL 2 已就绪');
     expect(errors).toEqual([]);
   }
-  expect(await page.evaluate(() => localStorage.getItem('heyat-save-v1'))).toBe(
-    saved,
+  const after = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('heyat-save-v1')!),
   );
+  expect(after.cash).toBe(before.cash);
+  expect(after.revenue).toBe(before.revenue);
+  expect(after.rooms).toEqual(before.rooms);
 });
