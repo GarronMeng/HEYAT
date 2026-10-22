@@ -44,7 +44,7 @@ export function createRenderer(
   scene.background = new T.Color('#091a2a');
   scene.fog = new T.Fog('#091a2a', 26, 65);
   const assets = createAssets(),
-    people = createPeople(assets);
+    people = createPeople();
   // Start iPhone/Android in the cheapest tier rather than waiting for a
   // sustained low-FPS trigger during shader compilation.
   let quality: Quality = /iPhone|iPad|Android/i.test(navigator.userAgent)
@@ -68,7 +68,7 @@ export function createRenderer(
     if (quality === 'high') {
       if (!environment) environment = bakeEnvironment();
       scene.environment = environment.texture;
-      scene.environmentIntensity = 0.45;
+      scene.environmentIntensity = 0.3;
     } else {
       scene.environment = null;
       scene.environmentIntensity = 0;
@@ -84,7 +84,7 @@ export function createRenderer(
   };
   canvas.addEventListener('webglcontextrestored', restoreEnvironment);
   const camera = new T.OrthographicCamera(-9, 9, 6, -6, 0.1, 100);
-  camera.position.set(13, 10, 17);
+  camera.position.set(9.5, 8.5, 18);
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(0, 2.6, 0);
   controls.enableDamping = true;
@@ -97,16 +97,17 @@ export function createRenderer(
   controls.maxZoom = 2.1;
   controls.rotateSpeed = 0.45;
   controls.zoomSpeed = 0.7;
-  scene.add(new T.HemisphereLight('#7e9bbf', '#67513b', 0.65));
-  const moon = new T.DirectionalLight('#b5c9eb', 1.1);
+  scene.add(new T.HemisphereLight('#7e9bbf', '#433628', 0.7));
+  const moon = new T.DirectionalLight('#a9c3eb', 0.85);
   moon.position.set(-5, 10, 8);
   scene.add(moon);
-  const warm = new T.DirectionalLight('#ffd39b', 1.6);
+  const warm = new T.DirectionalLight('#ffd39b', 1.45);
   warm.position.set(4, 6, 4);
   scene.add(warm);
   // The background is a single procedural texture with no per-frame city draws.
   const skyline = createNightSkyline();
   scene.background = skyline;
+  scene.backgroundIntensity = 0.62;
   scene.add(people.group);
   let state = initialHotel(),
     hotel = createHotel(assets, state),
@@ -140,7 +141,7 @@ export function createRenderer(
     const aspect = width / height,
       span = Math.max(
         10 + 2.3 * (floorCount(state) - 1),
-        (aspect < 0.85 ? 14.8 : 18) / aspect,
+        (aspect < 0.85 ? 14.8 : 16.6) / aspect,
       );
     camera.left = (-span * aspect) / 2;
     camera.right = (span * aspect) / 2;
@@ -161,7 +162,7 @@ export function createRenderer(
     applySize();
   };
   const resetCamera = () => {
-    camera.position.set(13, 10, 17);
+    camera.position.set(9.5, 8.5, 18);
     controls.target.set(0, 2.2 + floorCount(state) * 0.8, 0);
     camera.zoom = 1;
     camera.updateProjectionMatrix();
@@ -221,6 +222,11 @@ export function createRenderer(
               .UNMASKED_RENDERER_WEBGL,
           )
         : 'unavailable',
+      characters: {
+        pool: 6,
+        jointsPerActor: 11,
+        representation: 'shared skinned / merged / sprite',
+      },
       resources: {
         geometries: renderer.info.memory.geometries,
         textures: renderer.info.memory.textures,
@@ -256,7 +262,8 @@ export function createRenderer(
         applySize();
       }
       hotel.update(state);
-      people.update(state, now / 1000, QUALITY[quality].people);
+      people.group.userData.simple = camera.zoom < 0.8;
+      people.update(state, now / 1000);
       controls.update();
       renderer.render(scene, camera);
       stats = metrics.add(delta, now, {

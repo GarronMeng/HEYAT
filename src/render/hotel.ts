@@ -8,7 +8,7 @@ export const roomPosition = (floor: number, slot: number) =>
 export function createHotel(assets: Assets, state: HotelState) {
   const batch = new Batch(assets),
     group = new T.Group();
-  const { box, soft, plant } = interiorBuilder(batch);
+  const { box, soft, plant, cylinder } = interiorBuilder(batch);
   soft('dark', [13.3, 0.5, 6.6], [0, -0.4, 0]);
   box('brass', [12.8, 0.045, 6.3], [0, -0.14, 0]);
   box('stone', [15, 0.13, 8], [0, -0.08, 0.2]);
@@ -16,6 +16,15 @@ export function createHotel(assets: Assets, state: HotelState) {
     box('dark', [0.018, 0.006, 8], [-7.3 + i * 0.95, 0, 0.2]);
   for (let i = 0; i < 8; i++) box('dark', [15, 0.006, 0.018], [0, 0, -3.5 + i]);
   buildLobby(batch);
+  // Frame the entrance with shared street fixtures; keep the middle foreground open.
+  for (const x of [-6.3, 6.3]) {
+    soft('dark', [1.05, 0.3, 1.5], [x, 0.12, 1.9]);
+    plant(x, 0.28, 1.9, 0.85);
+    cylinder('black', [0.065, 1.3, 0.065], [x, 0.65, 3.2]);
+    cylinder('brass', [0.2, 0.05, 0.2], [x, 1.33, 3.2]);
+    batch.add('sphere', 'goldLight', [0.15, 0.23, 0.15], [x, 1.45, 3.2]);
+  }
+
   const sign = textSprite('H E Y A T', '#ffe3ad');
   sign.position.set(-0.15, 1.86, -1.73);
   sign.scale.set(2.1, 0.52, 1);
