@@ -29,7 +29,9 @@ test('all shader tiers render without changing cash, room state or save', async 
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: '导出性能报告' }).click();
     const download = await downloadPromise;
-    const report = JSON.parse(readFileSync((await download.path())!, 'utf8')) as {
+    const report = JSON.parse(
+      readFileSync((await download.path())!, 'utf8'),
+    ) as {
       visualTier: {
         quality: string;
         shader: string;
