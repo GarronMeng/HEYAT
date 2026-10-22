@@ -17,3 +17,20 @@ it('calculates frame percentiles and caps retained sampling data', () => {
   expect(metrics.samples).toHaveLength(180);
   expect(metrics.samples.at(-1)?.fps).toBe(50);
 });
+
+it('counts prolonged rendering stalls instead of hiding frames over two seconds', () => {
+  const metrics = new FrameMetrics();
+  const stats = {
+    calls: 100,
+    triangles: 20000,
+    geometries: 10,
+    width: 800,
+    height: 600,
+    quality: 'high' as const,
+  };
+  metrics.add(16, 1000, stats);
+  const result = metrics.add(2500, 3500, stats);
+  expect(result.p95).toBeGreaterThanOrEqual(16);
+  expect(result.fps).toBeLessThan(1);
+  expect(metrics.samples.at(-1)?.p50).toBe(16);
+});

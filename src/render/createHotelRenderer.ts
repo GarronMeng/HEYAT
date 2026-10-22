@@ -44,6 +44,11 @@ export function createRenderer(
   scene.fog = new T.Fog('#091a2a', 26, 65);
   const assets = createAssets(),
     people = createPeople(assets);
+  // Start iPhone/Android in the cheapest tier rather than waiting for a
+  // sustained low-FPS trigger during shader compilation.
+  let quality: Quality = /iPhone|iPad|Android/i.test(navigator.userAgent)
+    ? 'low'
+    : 'medium';
   // Prefilter once at startup. No live reflection camera, per-room lights or shadows.
   const bakeEnvironment = () => {
     const environmentScene = new RoomEnvironment();
@@ -55,14 +60,26 @@ export function createRenderer(
       pmrem.dispose();
     }
   };
-  let environment = bakeEnvironment();
-  scene.environment = environment.texture;
-  scene.environmentIntensity = 0.45;
+  // PMREM is a one-time High-only cost. Low and Medium use the existing
+  // baked-looking emissive details without per-fragment environment reflection.
+  let environment: T.WebGLRenderTarget | null = null;
+  const syncEnvironment = () => {
+    if (quality === 'high') {
+      if (!environment) environment = bakeEnvironment();
+      scene.environment = environment.texture;
+      scene.environmentIntensity = 0.45;
+    } else {
+      scene.environment = null;
+      scene.environmentIntensity = 0;
+      environment?.dispose();
+      environment = null;
+    }
+  };
   const restoreEnvironment = () => {
-    environment.dispose();
-    // Render targets lose their pixels on context loss; regenerate from procedural source.
-    environment = bakeEnvironment();
-    scene.environment = environment.texture;
+    environment?.dispose();
+    environment = null;
+    // Recreate only if the chosen tier needs PMREM after context restoration.
+    syncEnvironment();
   };
   canvas.addEventListener('webglcontextrestored', restoreEnvironment);
   const camera = new T.OrthographicCamera(-9, 9, 6, -6, 0.1, 100);
@@ -137,9 +154,11 @@ export function createRenderer(
     width = 1,
     height = 1,
     dpr = 1;
+  assets.applyQuality(hotel.group, quality);
+  assets.applyQuality(people.group, quality);
+  assets.applyQuality(city, quality);
   scene.add(hotel.group);
-  let quality: Quality = 'medium',
-    automatic = true,
+  let automatic = true,
     slowSince = 0,
     lastTime = 0;
   const metrics = new FrameMetrics();
@@ -173,9 +192,16 @@ export function createRenderer(
     lit.count = Math.round((li * QUALITY[quality].city) / 24);
   };
   const setQuality = (next: Quality, auto = false) => {
+    const changed = quality !== next;
     quality = next;
     automatic = auto;
     slowSince = 0;
+    if (changed) {
+      syncEnvironment();
+      assets.applyQuality(hotel.group, quality);
+      assets.applyQuality(people.group, quality);
+      assets.applyQuality(city, quality);
+    }
     applySize();
   };
   const resetCamera = () => {
@@ -225,6 +251,13 @@ export function createRenderer(
       device: navigator.userAgent,
       viewport: { width, height, dpr },
       mobileStatus: 'MOBILE_PERF_UNVERIFIED',
+      visualTier: {
+        quality,
+        shader: quality === 'low' ? 'Lambert' : 'Standard',
+        normalMaps: quality === 'high',
+        environmentReflection: !!environment,
+        decorativeOverlays: quality !== 'low',
+      },
       renderer: context.getParameter(context.RENDERER),
       gpu: context.getExtension('WEBGL_debug_renderer_info')
         ? context.getParameter(
@@ -260,6 +293,7 @@ export function createRenderer(
         disposeGroup(hotel.group);
         hotel.proxyMaterial.dispose();
         hotel = createHotel(assets, state);
+        assets.applyQuality(hotel.group, quality);
         scene.add(hotel.group);
         previousKey = key;
         controls.target.y = 2.2 + floorCount(state) * 0.8;
@@ -294,7 +328,7 @@ export function createRenderer(
       lit.dispose();
       people.dispose();
       canvas.removeEventListener('webglcontextrestored', restoreEnvironment);
-      environment.dispose();
+      environment?.dispose();
       assets.dispose();
       renderer.dispose();
     },

@@ -1,6 +1,7 @@
 import * as T from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { createSurfaces } from './surfaces';
+import type { Quality } from './perf';
 
 export function createAssets() {
   const surfaces = createSurfaces();
@@ -116,6 +117,42 @@ export function createAssets() {
     locked: material('#23333f'),
   };
   materials.curtain.side = T.DoubleSide;
+  // Shader complexity is part of the quality budget, not just DPR and actor count.
+  // All variants share the same textures: no duplicate GPU texture uploads.
+  const medium = new Map<T.Material, T.Material>();
+  const low = new Map<T.Material, T.Material>();
+  const originals = new Map<T.Material, T.Material>();
+  for (const source of Object.values(materials)) {
+    if (!(source instanceof T.MeshStandardMaterial)) continue;
+    const simpler = source.clone();
+    simpler.normalMap = null;
+    simpler.aoMap = null;
+    simpler.envMapIntensity = 0;
+    medium.set(source, simpler);
+    originals.set(simpler, source);
+    const cheapest = new T.MeshLambertMaterial({
+      color: source.color.clone(),
+      map: source.map,
+      emissive: source.emissive.clone(),
+      emissiveIntensity: source.emissiveIntensity,
+      opacity: source.opacity,
+      transparent: source.transparent,
+      side: source.side,
+      depthWrite: source.depthWrite,
+    });
+    low.set(source, cheapest);
+    originals.set(cheapest, source);
+  }
+  const original = (material: T.Material) =>
+    originals.get(material) ?? material;
+  const variant = (material: T.Material, quality: Quality): T.Material => {
+    const source = original(material);
+    return quality === 'low'
+      ? (low.get(source) ?? source)
+      : quality === 'medium'
+        ? (medium.get(source) ?? source)
+        : source;
+  };
   return {
     geometries,
     materials,
@@ -124,7 +161,29 @@ export function createAssets() {
       const image = t.image as { width: number; height: number };
       return sum + (image.width * image.height * 4 * 4) / 3;
     }, 0),
+    /** Switch shared materials without rebuilding geometry, affecting all instances. */
+    applyQuality(root: T.Object3D, quality: Quality) {
+      root.traverse((object) => {
+        if (!(object instanceof T.Mesh)) return;
+        const material = object.material;
+        const source = (m: T.Material) => original(m);
+        const primary = Array.isArray(material)
+          ? source(material[0]!)
+          : source(material);
+        object.material = Array.isArray(material)
+          ? material.map((m) => variant(m, quality))
+          : variant(material, quality);
+        // Translucent overlays can dominate fill rate on mobile. Preserve
+        // layout and room picking while disabling only decorative layers.
+        if (primary === materials.halo || primary === materials.contact)
+          object.visible = quality !== 'low';
+        else if (primary === materials.glass)
+          object.visible = quality === 'high';
+      });
+    },
     dispose() {
+      for (const material of medium.values()) material.dispose();
+      for (const material of low.values()) material.dispose();
       Object.values(geometries).forEach((g) => g.dispose());
       Object.values(materials).forEach((m) => m.dispose());
       surfaces.dispose();
