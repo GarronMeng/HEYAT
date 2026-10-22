@@ -6,11 +6,34 @@ import type { Assets } from './assets';
 
 type Role = 'reception' | 'porter' | 'housekeeping' | 'guest';
 const ROLES: Role[] = ['reception', 'porter', 'housekeeping', 'guest'];
-const PALETTE: Record<Role, { jacket: string; trouser: string; trim: string; hair: string }> = {
-  reception: { jacket: '#22394a', trouser: '#202735', trim: '#c7a36c', hair: '#302522' },
-  porter: { jacket: '#7b3640', trouser: '#283342', trim: '#d4b37b', hair: '#352925' },
-  housekeeping: { jacket: '#d0bca6', trouser: '#344b52', trim: '#648079', hair: '#312a28' },
-  guest: { jacket: '#5c7e83', trouser: '#404654', trim: '#e1cdb0', hair: '#4b3227' },
+const PALETTE: Record<
+  Role,
+  { jacket: string; trouser: string; trim: string; hair: string }
+> = {
+  reception: {
+    jacket: '#22394a',
+    trouser: '#202735',
+    trim: '#c7a36c',
+    hair: '#302522',
+  },
+  porter: {
+    jacket: '#7b3640',
+    trouser: '#283342',
+    trim: '#d4b37b',
+    hair: '#352925',
+  },
+  housekeeping: {
+    jacket: '#d0bca6',
+    trouser: '#344b52',
+    trim: '#648079',
+    hair: '#312a28',
+  },
+  guest: {
+    jacket: '#5c7e83',
+    trouser: '#404654',
+    trim: '#e1cdb0',
+    hair: '#4b3227',
+  },
 };
 
 /** Merge colored primitives once per role: a guest is only three near-field meshes. */
@@ -44,12 +67,12 @@ function createFigureGeometry(
   if (leg) {
     // Hip joint is local origin. The entire leg pivots during walking.
     part('soft', [0.105, 0.33, 0.13], [0, -0.16, 0], colors.trouser);
-    part('soft', [0.15, 0.10, 0.23], [0, -0.35, 0.035], '#22262d');
+    part('soft', [0.15, 0.1, 0.23], [0, -0.35, 0.035], '#22262d');
   } else {
     // Normal proportions, no oversized chibi head or stick-shaped torso.
     part('soft', [0.37, 0.43, 0.22], [0, 0.67, 0], colors.jacket);
     part('soft', [0.34, 0.14, 0.22], [0, 0.47, 0], colors.trouser);
-    part('soft', [0.20, 0.24, 0.13], [0, 0.75, 0.125], colors.trim);
+    part('soft', [0.2, 0.24, 0.13], [0, 0.75, 0.125], colors.trim);
     part('sphere', [0.15, 0.19, 0.145], [0, 1.05, 0], '#c69b7b');
     part('sphere', [0.155, 0.095, 0.15], [0, 1.185, -0.015], colors.hair);
     part('cylinder', [0.032, 0.32, 0.038], [-0.235, 0.66, 0], colors.jacket);
@@ -118,10 +141,13 @@ export function createPeople(assets: Assets) {
   const sprite = createDistantSprite();
   const actors = Array.from({ length: 26 }, (_, index) => {
     const role: Role =
-      index === 2 ? 'porter'
-      : index === 3 ? 'housekeeping'
-      : index < 6 ? 'reception'
-      : 'guest';
+      index === 2
+        ? 'porter'
+        : index === 3
+          ? 'housekeeping'
+          : index < 6
+            ? 'reception'
+            : 'guest';
     const lod = new T.LOD();
     const near = new T.Group();
     const torso = new T.Mesh(geometry.get(role)!, skin);
@@ -137,7 +163,7 @@ export function createPeople(assets: Assets) {
       assets.geometries.soft,
       assets.materials[role === 'guest' ? 'navy' : 'black'],
     );
-    distant.scale.set(0.28, 0.86, 0.20);
+    distant.scale.set(0.28, 0.86, 0.2);
     distant.position.y = 0.52;
     lod.addLevel(distant, 27);
     const far = new T.Sprite(sprite.material);
@@ -164,7 +190,9 @@ export function createPeople(assets: Assets) {
     const stride = moving ? Math.sin(time * 5 + actorIndex * 0.7) * 0.45 : 0;
     actor.left.rotation.x = stride;
     actor.right.rotation.x = -stride;
-    actor.torso.rotation.z = moving ? Math.sin(time * 5 + actorIndex) * 0.015 : 0;
+    actor.torso.rotation.z = moving
+      ? Math.sin(time * 5 + actorIndex) * 0.015
+      : 0;
   };
   return {
     group,
@@ -195,32 +223,45 @@ export function createPeople(assets: Assets) {
         true,
         Math.PI / 2,
       );
-      pose(3, new T.Vector3(-4.7, 0.25, 1.9 + Math.sin(time * 0.22) * 0.4), true);
+      pose(
+        3,
+        new T.Vector3(-4.7, 0.25, 1.9 + Math.sin(time * 0.22) * 0.4),
+        true,
+      );
       pose(4, new T.Vector3(2.9, 0.25, -0.4), false);
       pose(5, new T.Vector3(-2, 0.25, 1.8), false);
       const queueLimit = Math.min(8, Math.max(1, limit - 8));
-      state.queue.slice(0, queueLimit).forEach((guest, index) =>
-        pose(
-          6 + index,
-          new T.Vector3(
-            1.8 + index * 0.34,
-            0.25,
-            1.1 + (index % 2) * 0.4 + Math.sin(time + guest.id) * 0.025,
+      state.queue
+        .slice(0, queueLimit)
+        .forEach((guest, index) =>
+          pose(
+            6 + index,
+            new T.Vector3(
+              1.8 + index * 0.34,
+              0.25,
+              1.1 + (index % 2) * 0.4 + Math.sin(time + guest.id) * 0.025,
+            ),
+            false,
+            -0.9,
           ),
-          false,
-          -0.9,
-        ),
-      );
+        );
       let index = 6 + queueLimit;
       for (const room of state.rooms) {
-        if (!['OCCUPIED', 'RESERVED', 'CLEANING'].includes(room.status)) continue;
+        if (!['OCCUPIED', 'RESERVED', 'CLEANING'].includes(room.status))
+          continue;
         const p = roomPosition(room.floor, room.slot);
         p.y += 0.04;
         p.x += 0.83;
-        p.z = room.status === 'RESERVED'
-          ? 1.4 - Math.min(1, (state.time - room.changedAt) / 2) * 0.7
-          : 0.65;
-        pose(index++, p, room.status !== 'OCCUPIED', Math.sin(time * 0.3) * 0.2);
+        p.z =
+          room.status === 'RESERVED'
+            ? 1.4 - Math.min(1, (state.time - room.changedAt) / 2) * 0.7
+            : 0.65;
+        pose(
+          index++,
+          p,
+          room.status !== 'OCCUPIED',
+          Math.sin(time * 0.3) * 0.2,
+        );
       }
     },
   };
