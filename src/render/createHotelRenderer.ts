@@ -10,6 +10,7 @@ import {
 import { createAssets, disposeGroup } from './assets';
 import { createHotel } from './hotel';
 import { createPeople } from './people';
+import { createNightSkyline } from './skyline';
 import { FrameMetrics, QUALITY, type Quality, type RenderStats } from './perf';
 
 export interface SceneRenderer {
@@ -103,51 +104,10 @@ export function createRenderer(
   const warm = new T.DirectionalLight('#ffd39b', 1.6);
   warm.position.set(4, 6, 4);
   scene.add(warm);
-  // Repeated city silhouettes and illuminated windows share instanced draws.
-  const city = new T.InstancedMesh(
-    assets.geometries.box,
-    assets.materials.dark,
-    24,
-  );
-  const windows = new T.InstancedMesh(
-    assets.geometries.box,
-    assets.materials.window,
-    240,
-  );
-  const lit = new T.InstancedMesh(
-    assets.geometries.box,
-    assets.materials.nightWindow,
-    100,
-  );
-  const matrix = new T.Matrix4(),
-    v = new T.Vector3(),
-    q = new T.Quaternion();
-  let wi = 0,
-    li = 0;
-  for (let i = 0; i < 24; i++) {
-    const x = ((i % 12) - 5.5) * 2.5,
-      z = -8 - Math.floor(i / 12) * 5,
-      h = 3 + ((i * 7) % 11) * 0.5;
-    matrix.compose(v.set(x, h / 2 - 0.2, z), q, new T.Vector3(1.8, h, 1.9));
-    city.setMatrixAt(i, matrix);
-    for (let row = 0; row < Math.floor(h / 0.6); row++)
-      for (let col = 0; col < 2; col++) {
-        matrix.compose(
-          v.set(x + col * 0.65 - 0.32, 0.5 + row * 0.6, z + 1),
-          q,
-          new T.Vector3(0.26, 0.22, 0.03),
-        );
-        if ((row + i + col) % 4 === 0 && li < 100)
-          lit.setMatrixAt(li++, matrix);
-        else if (wi < 240) windows.setMatrixAt(wi++, matrix);
-      }
-  }
-  city.instanceMatrix.needsUpdate = true;
-  windows.count = wi;
-  lit.count = li;
-  windows.instanceMatrix.needsUpdate = true;
-  lit.instanceMatrix.needsUpdate = true;
-  scene.add(city, windows, lit, people.group);
+  // The background is a single procedural texture with no per-frame city draws.
+  const skyline = createNightSkyline();
+  scene.background = skyline;
+  scene.add(people.group);
   let state = initialHotel(),
     hotel = createHotel(assets, state),
     previousKey = '',
@@ -156,7 +116,7 @@ export function createRenderer(
     dpr = 1;
   assets.applyQuality(hotel.group, quality);
   assets.applyQuality(people.group, quality);
-  assets.applyQuality(city, quality);
+
   scene.add(hotel.group);
   let automatic = true,
     slowSince = 0,
@@ -187,9 +147,6 @@ export function createRenderer(
     camera.top = span / 2;
     camera.bottom = -span / 2;
     camera.updateProjectionMatrix();
-    city.count = QUALITY[quality].city;
-    windows.count = Math.round((wi * QUALITY[quality].city) / 24);
-    lit.count = Math.round((li * QUALITY[quality].city) / 24);
   };
   const setQuality = (next: Quality, auto = false) => {
     const changed = quality !== next;
@@ -200,7 +157,6 @@ export function createRenderer(
       syncEnvironment();
       assets.applyQuality(hotel.group, quality);
       assets.applyQuality(people.group, quality);
-      assets.applyQuality(city, quality);
     }
     applySize();
   };
@@ -323,9 +279,7 @@ export function createRenderer(
       canvas.removeEventListener('pointerup', pointerUp);
       disposeGroup(hotel.group);
       hotel.proxyMaterial.dispose();
-      city.dispose();
-      windows.dispose();
-      lit.dispose();
+      skyline.dispose();
       people.dispose();
       canvas.removeEventListener('webglcontextrestored', restoreEnvironment);
       environment?.dispose();
