@@ -1,0 +1,44 @@
+{
+  "note": "Short diagnostic capture with camera movement and settings drawer; not a stable FPS benchmark or target-device acceptance.",
+  "mobileStatus": "MOBILE_PERF_UNVERIFIED",
+  "before": {
+    "device": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "viewportAtExport": {
+      "width": 1070,
+      "height": 566,
+      "dpr": 1
+    },
+    "sampleCount": 19,
+    "medianFPS": 3.337565114006187,
+    "medianDrawCalls": 68,
+    "medianTriangles": 69474,
+    "resources": {
+      "geometries": 14,
+      "textures": 26,
+      "surfaceTextureBytesEstimate": 3189419,
+      "heapBytes": 12700000,
+      "note": "Texture bytes are a conservative RGBA+mipmap estimate; GPU/VRAM bytes are not exposed by WebGL. Heap is browser-dependent."
+    }
+  },
+  "after": {
+    "device": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "viewportAtExport": {
+      "width": 1070,
+      "height": 566,
+      "dpr": 1
+    },
+    "sampleCount": 20,
+    "medianFPS": 3.0516842188515234,
+    "medianDrawCalls": 68.0,
+    "medianTriangles": 63630.0,
+    "resources": {
+      "geometries": 16,
+      "textures": 26,
+      "surfaceTextureBytesEstimate": 3189419,
+      "heapBytes": 11200000,
+      "note": "Texture bytes are a conservative RGBA+mipmap estimate; GPU/VRAM bytes are not exposed by WebGL. Heap is browser-dependent."
+    }
+  }
+}

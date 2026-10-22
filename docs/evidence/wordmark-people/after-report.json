@@ -1,0 +1,280 @@
+{
+  "version": 1,
+  "device": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+  "viewport": {
+    "width": 1070,
+    "height": 566,
+    "dpr": 1
+  },
+  "mobileStatus": "MOBILE_PERF_UNVERIFIED",
+  "camera": {
+    "position": [8.982282376198954, 11.612209604425516, 17.019061344376972],
+    "target": [0, 3, 0],
+    "zoom": 1,
+    "fullOrbit": true,
+    "pan": true
+  },
+  "visualTier": {
+    "quality": "high",
+    "shader": "Standard",
+    "normalMaps": true,
+    "environmentReflection": true,
+    "decorativeOverlays": true
+  },
+  "renderer": "WebKit WebGL",
+  "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "characters": {
+    "pool": 6,
+    "jointsPerActor": 11,
+    "representation": "shared skinned / merged / sprite"
+  },
+  "resources": {
+    "geometries": 16,
+    "textures": 26,
+    "surfaceTextureBytesEstimate": 3189419,
+    "heapBytes": 11200000,
+    "note": "Texture bytes are a conservative RGBA+mipmap estimate; GPU/VRAM bytes are not exposed by WebGL. Heap is browser-dependent."
+  },
+  "samples": [
+    {
+      "calls": 66,
+      "triangles": 63558,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "medium",
+      "fps": 25.313251487138604,
+      "p50": 16.67,
+      "p95": 28.200000000186265,
+      "at": 1182
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1070,
+      "height": 566,
+      "quality": "high",
+      "fps": 5.100999795959787,
+      "p50": 16.67,
+      "p95": 278.79999999981374,
+      "at": 3022
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1070,
+      "height": 566,
+      "quality": "high",
+      "fps": 3.0768978305817853,
+      "p50": 19.200000000186265,
+      "p95": 1557.2000000001863,
+      "at": 5741
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 2.203090691452253,
+      "p50": 28.200000000186265,
+      "p95": 1983.2000000001863,
+      "at": 9036
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 3.5399217355485733,
+      "p50": 16.800000000279397,
+      "p95": 1557.2000000001863,
+      "at": 10188
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 3.3981691419811404,
+      "p50": 16.899999999906868,
+      "p95": 1557.2000000001863,
+      "at": 11460
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 3.2588262736864433,
+      "p50": 18.800000000279397,
+      "p95": 1557.2000000001863,
+      "at": 12527
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 3.1353380123792545,
+      "p50": 20.100000000093132,
+      "p95": 1557.2000000001863,
+      "at": 13943
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 3.1089825571946395,
+      "p50": 28.200000000186265,
+      "p95": 690.5,
+      "at": 15019
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 3.0833339893618605,
+      "p50": 200.39999999990687,
+      "p95": 690.5,
+      "at": 16109
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 3.037788878533404,
+      "p50": 250.10000000009313,
+      "p95": 690.5,
+      "at": 17325
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 3.065579559169643,
+      "p50": 272.5,
+      "p95": 690.5,
+      "at": 18481
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 3.003785842942721,
+      "p50": 278.79999999981374,
+      "p95": 694,
+      "at": 19509
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 3.000263412957259,
+      "p50": 318.60000000009313,
+      "p95": 694,
+      "at": 20531
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 2.996393695201007,
+      "p50": 330,
+      "p95": 690.5,
+      "at": 21558
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 2.9874426296113605,
+      "p50": 333.3000000002794,
+      "p95": 690.5,
+      "at": 22624
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 2.9711657106503697,
+      "p50": 333.3000000002794,
+      "p95": 690.5,
+      "at": 23753
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 2.9639227977427547,
+      "p50": 334.20000000018626,
+      "p95": 690.5,
+      "at": 24821
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1440,
+      "height": 566,
+      "quality": "high",
+      "fps": 2.925289682740442,
+      "p50": 338.39999999990687,
+      "p95": 690.5,
+      "at": 26163
+    },
+    {
+      "calls": 68,
+      "triangles": 63630,
+      "geometries": 16,
+      "width": 1070,
+      "height": 566,
+      "quality": "high",
+      "fps": 2.8494941592771017,
+      "p50": 339.20000000018626,
+      "p95": 694,
+      "at": 27888
+    }
+  ]
+}
