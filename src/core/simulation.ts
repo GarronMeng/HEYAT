@@ -8,6 +8,7 @@ import {
   type CommandResult,
   type HotelState,
 } from './model';
+import { buyUpgrade, rates } from './progression';
 
 export const baseRates = {
   stay: 18,
@@ -24,8 +25,14 @@ export function admit(state: HotelState): CommandResult {
   const room = state.rooms.find((room) => room.status === 'AVAILABLE');
   if (!room) return { ok: false, message: '暂无净房，请先安排清洁' };
   const guest = state.queue.shift()!;
-  room.order = { id: state.nextOrder++, guest, revenue: baseRates.price };
-  transition(room, 'RESERVED', state, baseRates.checkIn);
+  room.order = {
+    id: state.nextOrder++,
+    guest,
+    revenue: Math.round(
+      rates(state).price * (guest.vip ? 1 + 0.75 * (state.levels.vip ?? 0) : 1),
+    ),
+  };
+  transition(room, 'RESERVED', state, rates(state).checkIn);
   return { ok: true, message: `${guest.name}正在办理 ${room.id} 房入住` };
 }
 
@@ -34,7 +41,7 @@ export function clean(state: HotelState): CommandResult {
     return { ok: false, message: '客房管家正在清洁' };
   const room = state.rooms.find((room) => room.status === 'DIRTY');
   if (!room) return { ok: false, message: '所有开放客房都很整洁' };
-  transition(room, 'CLEANING', state, baseRates.clean);
+  transition(room, 'CLEANING', state, rates(state).clean);
   return { ok: true, message: `已安排清洁 ${room.id} 房` };
 }
 
@@ -45,7 +52,7 @@ export function tick(state: HotelState) {
     room.remaining = Math.max(0, Math.round((room.remaining - STEP) * 10) / 10);
     if (room.remaining > 0) continue;
     if (room.status === 'RESERVED')
-      transition(room, 'OCCUPIED', state, baseRates.stay);
+      transition(room, 'OCCUPIED', state, rates(state).stay);
     else if (room.status === 'OCCUPIED') {
       const order = room.order!;
       state.cash += order.revenue;
@@ -68,12 +75,24 @@ export function tick(state: HotelState) {
       id: state.nextGuest++,
       name: names[Math.floor(random(state) * names.length)]!,
       arrivedAt: state.time,
-      vip: false,
+      vip: random(state) < rates(state).vipChance,
     };
     if (state.queue.length < 12) state.queue.push(guest);
     else state.lost++;
     state.nextArrival =
-      state.time + baseRates.arrival * (0.85 + random(state) * 0.3);
+      state.time + rates(state).arrival * (0.85 + random(state) * 0.3);
+  }
+  if (rates(state).autoClean) clean(state);
+  if (rates(state).autoDesk) admit(state);
+  if (
+    !state.won &&
+    state.rooms.every((room) => room.status !== 'LOCKED') &&
+    (state.levels.brand ?? 0) === 3 &&
+    state.revenue >= 200000
+  ) {
+    state.won = true;
+    state.wonAt = state.time;
+    state.eventId++;
   }
 }
 
@@ -90,7 +109,7 @@ export class HotelSimulation {
   command(command: Command): CommandResult {
     if (command.type === 'CHECK_IN') return admit(this.state);
     if (command.type === 'CLEAN') return clean(this.state);
-    return { ok: false, message: '升级系统正在准备' };
+    return buyUpgrade(this.state, command.id);
   }
   advance(seconds: number): void {
     if (!Number.isFinite(seconds) || seconds < 0 || seconds > 3600)
