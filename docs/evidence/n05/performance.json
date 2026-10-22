@@ -8,16 +8,8 @@
   },
   "mobileStatus": "MOBILE_PERF_UNVERIFIED",
   "camera": {
-    "position": [
-      8.829013504439825,
-      13.065255456900484,
-      16.728657166307038
-    ],
-    "target": [
-      0,
-      4.6000000000000005,
-      0
-    ],
+    "position": [8.829013504439825, 13.065255456900484, 16.728657166307038],
+    "target": [0, 4.6000000000000005, 0],
     "zoom": 1,
     "fullOrbit": true,
     "pan": true
@@ -31,12 +23,7 @@
   },
   "renderer": "WebKit WebGL",
   "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
-  "facilities": [
-    "breakfast",
-    "gym",
-    "lounge",
-    "rooftop"
-  ],
+  "facilities": ["breakfast", "gym", "lounge", "rooftop"],
   "characters": {
     "pool": 6,
     "jointsPerActor": 11,
