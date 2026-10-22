@@ -17,13 +17,13 @@ export function peoplePoses(state: HotelState, time: number): PersonPose[] {
     room: NonNullable<typeof guest>,
     action: Action,
   ): PersonPose => ({
-    x: -4.05 + room.slot * 2.7 + 0.87,
+    x: -4.05 + room.slot * 2.7 + 0.65,
     y: 2.64 + (room.floor - 1) * 2.25,
     z:
       room.status === 'RESERVED'
-        ? 1.7 -
-          Math.min(1, Math.max(0, (state.time - room.changedAt) / 2)) * 0.35
-        : 1.35,
+        ? 1.8 -
+          Math.min(1, Math.max(0, (state.time - room.changedAt) / 2)) * 0.3
+        : 1.5,
     facing: -0.5,
     action,
   });
@@ -49,21 +49,21 @@ export function peoplePoses(state: HotelState, time: number): PersonPose[] {
       x: 4.65,
       y: 0.25,
       z: 0.7 + walking * 0.9,
-      facing: walking > 0 ? 0 : Math.PI,
+      facing: Math.cos(time * 0.2) > 0 ? 0 : Math.PI,
       action: 'walk',
     },
     cleaner
       ? roomPose(cleaner, 'clean')
-      : { x: 5.05, y: 0.25, z: -0.8, facing: -0.4, action: 'idle' },
+      : { x: 3.6, y: 0.25, z: -0.65, facing: -0.4, action: 'idle' },
     guest
       ? roomPose(guest, guest.status === 'RESERVED' ? 'walk' : 'idle')
-      : { x: -1.1, y: 0.25, z: 1.35, facing: 0.4, action: 'idle' },
+      : { x: -1.1, y: 0.25, z: 1.5, facing: 0.4, action: 'idle' },
     {
-      x: 1.7,
+      x: 1.95,
       y: 0.25,
       z: 0.7,
       facing: -0.8,
-      action: state.queue.length ? 'idle' : 'walk',
+      action: 'idle',
     },
   ];
 }

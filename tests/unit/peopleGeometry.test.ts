@@ -19,6 +19,7 @@ describe('representative hotel people', () => {
       expect(g.boundingBox!.min.y).toBeGreaterThanOrEqual(0);
       expect(g.boundingBox!.max.y).toBeGreaterThan(1.19);
       expect(g.boundingBox!.max.y).toBeLessThan(1.3);
+      expect(g.boundingBox!.max.x - g.boundingBox!.min.x).toBeLessThan(0.38);
       const indices = g.getAttribute('skinIndex'),
         weights = g.getAttribute('skinWeight');
       for (let i = 0; i < indices.count; i++) {

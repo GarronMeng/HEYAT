@@ -1,6 +1,6 @@
 import * as T from 'three';
 import { floorCount, type HotelState } from '../core/model';
-import { Batch, textSprite, type Assets } from './assets';
+import { Batch, textSprite, hotelWordmark, type Assets } from './assets';
 import { buildLobby, buildRoom, interiorBuilder } from './interiors';
 
 export const roomPosition = (floor: number, slot: number) =>
@@ -25,9 +25,9 @@ export function createHotel(assets: Assets, state: HotelState) {
     batch.add('sphere', 'goldLight', [0.15, 0.23, 0.15], [x, 1.45, 3.2]);
   }
 
-  const sign = textSprite('H E Y A T', '#ffe3ad');
-  sign.position.set(-0.15, 1.86, -1.73);
-  sign.scale.set(2.1, 0.52, 1);
+  const sign = hotelWordmark('#4d4436');
+  sign.position.set(-0.15, 0.66, -0.12);
+  sign.scale.set(1.55, 0.3875, 1);
   group.add(sign);
   if (state.levels.autodesk) {
     soft('brass', [0.45, 1.1, 0.4], [2, 0.8, 0.15]);
@@ -117,9 +117,9 @@ export function createHotel(assets: Assets, state: HotelState) {
     box('brass', [0.018, 0.42, 0.018], [x, roofY + 0.44, -2.02]);
   box('brass', [11.3, 0.025, 0.025], [0, roofY + 0.66, -2.02]);
   box('dark', [3.1, 0.63, 0.1], [-0.5, roofY + 0.46, -1.58]);
-  const roofSign = textSprite('HEYAT HOTEL', '#ffdda1');
-  roofSign.scale.set(2.9, 0.73, 1);
-  roofSign.position.set(-0.5, roofY + 0.48, -1.48);
+  const roofSign = hotelWordmark('#ffdda1');
+  roofSign.scale.set(2.9, 0.58, 1);
+  roofSign.position.set(-0.5, roofY + 0.46, -1.515);
   group.add(roofSign);
   group.add(batch.finish());
   return {

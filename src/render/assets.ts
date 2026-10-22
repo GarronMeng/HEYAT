@@ -262,9 +262,60 @@ export function textSprite(
   sprite.scale.set(3, 0.75, 1);
   return sprite;
 }
+/** Architectural wordmark: a fixed surface, never a camera-facing billboard. */
+export function hotelWordmark(color = '#ffe0a5') {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d')!;
+  ctx.scale(2, 2);
+  ctx.fillStyle = color;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.font = '500 84px Georgia, serif';
+  const title = 'HEYAT',
+    gap = 9;
+  const width =
+    [...title].reduce((sum, c) => sum + ctx.measureText(c).width, 0) + gap * 4;
+  let x = (512 - width) / 2;
+  for (const c of title) {
+    ctx.fillText(c, x, 48);
+    x += ctx.measureText(c).width + gap;
+  }
+  ctx.font = '500 17px sans-serif';
+  const subtitle = 'HOTEL',
+    spacing = 10;
+  const subWidth =
+    [...subtitle].reduce((sum, c) => sum + ctx.measureText(c).width, 0) +
+    spacing * 4;
+  x = (512 - subWidth) / 2;
+  for (const c of subtitle) {
+    ctx.fillText(c, x, 106);
+    x += ctx.measureText(c).width + spacing;
+  }
+  const map = new T.CanvasTexture(canvas);
+  map.colorSpace = T.SRGBColorSpace;
+  const material = new T.MeshBasicMaterial({
+    map,
+    transparent: true,
+    depthWrite: false,
+    polygonOffset: true,
+    polygonOffsetFactor: -1,
+    polygonOffsetUnits: -1,
+  });
+  const mesh = new T.Mesh(new T.PlaneGeometry(1, 1), material);
+  mesh.userData.ownedWordmark = true;
+  return mesh;
+}
 export function disposeGroup(group: T.Object3D) {
   group.traverse((object) => {
     if (object instanceof T.InstancedMesh) object.dispose();
+    if (object instanceof T.Mesh && object.userData.ownedWordmark) {
+      object.geometry.dispose();
+      const material = object.material as T.MeshBasicMaterial;
+      material.map?.dispose();
+      material.dispose();
+    }
     if (object instanceof T.Sprite) {
       object.material.map?.dispose();
       object.material.dispose();
