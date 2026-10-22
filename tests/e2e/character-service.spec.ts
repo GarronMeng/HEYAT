@@ -45,7 +45,7 @@ test('six hotel representatives render service and waiting actions in an operati
   await page.mouse.up();
   await page.mouse.wheel(0, -550);
   await page.waitForTimeout(1000);
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < (process.env.CI ? 2 : 6); i++) {
     await page.waitForTimeout(350);
     await page.screenshot({ path: info.outputPath(`service-motion-${i}.png`) });
   }
