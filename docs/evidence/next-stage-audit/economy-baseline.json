@@ -1,0 +1,1447 @@
+{
+  "baseline": "0ded498b8dd7d152fd6452cfc1a59693c19c3e4c",
+  "seed": 1731,
+  "scenarioSeconds": 3600,
+  "warmupSeconds": 120,
+  "configurations": [
+    {
+      "rooms": 1,
+      "upgraded": false,
+      "rates": {
+        "price": 90,
+        "checkIn": 2,
+        "clean": 5,
+        "stay": 18,
+        "arrival": 6,
+        "autoDesk": true,
+        "autoClean": true,
+        "vipChance": 0
+      },
+      "occupancy": 0.7189655172413794,
+      "meanDirty": 0,
+      "meanQueue": 11.884080459770114,
+      "completed": 144,
+      "lost": 441,
+      "arrivalOccupancyUpperBound": 3,
+      "cleaningOccupancyUpperBound": 3.6
+    },
+    {
+      "rooms": 1,
+      "upgraded": true,
+      "rates": {
+        "price": 1099,
+        "checkIn": 0.8333333333333334,
+        "clean": 2.2727272727272725,
+        "stay": 13.23529411764706,
+        "arrival": 2.727272727272727,
+        "autoDesk": true,
+        "autoClean": true,
+        "vipChance": 0.22
+      },
+      "occupancy": 0.8102586206896552,
+      "meanDirty": 0,
+      "meanQueue": 11.912844827586207,
+      "completed": 220,
+      "lost": 1070,
+      "arrivalOccupancyUpperBound": 4.852941176470589,
+      "cleaningOccupancyUpperBound": 5.8235294117647065
+    },
+    {
+      "rooms": 4,
+      "upgraded": false,
+      "rates": {
+        "price": 90,
+        "checkIn": 2,
+        "clean": 5,
+        "stay": 18,
+        "arrival": 6,
+        "autoDesk": true,
+        "autoClean": true,
+        "vipChance": 0
+      },
+      "occupancy": 0.720014367816092,
+      "meanDirty": 0,
+      "meanQueue": 7.32485632183908,
+      "completed": 573,
+      "lost": 9,
+      "arrivalOccupancyUpperBound": 0.75,
+      "cleaningOccupancyUpperBound": 0.9
+    },
+    {
+      "rooms": 4,
+      "upgraded": true,
+      "rates": {
+        "price": 1099,
+        "checkIn": 0.8333333333333334,
+        "clean": 2.2727272727272725,
+        "stay": 13.23529411764706,
+        "arrival": 2.727272727272727,
+        "autoDesk": true,
+        "autoClean": true,
+        "vipChance": 0.22
+      },
+      "occupancy": 0.81,
+      "meanDirty": 0,
+      "meanQueue": 11.614080459770115,
+      "completed": 880,
+      "lost": 407,
+      "arrivalOccupancyUpperBound": 1.2132352941176472,
+      "cleaningOccupancyUpperBound": 1.4558823529411766
+    },
+    {
+      "rooms": 8,
+      "upgraded": false,
+      "rates": {
+        "price": 90,
+        "checkIn": 2,
+        "clean": 5,
+        "stay": 18,
+        "arrival": 6,
+        "autoDesk": true,
+        "autoClean": true,
+        "vipChance": 0
+      },
+      "occupancy": 0.3729058908045977,
+      "meanDirty": 0,
+      "meanQueue": 0,
+      "completed": 594,
+      "lost": 0,
+      "arrivalOccupancyUpperBound": 0.375,
+      "cleaningOccupancyUpperBound": 0.45
+    },
+    {
+      "rooms": 8,
+      "upgraded": true,
+      "rates": {
+        "price": 1099,
+        "checkIn": 0.8333333333333334,
+        "clean": 2.2727272727272725,
+        "stay": 13.23529411764706,
+        "arrival": 2.727272727272727,
+        "autoDesk": true,
+        "autoClean": true,
+        "vipChance": 0.22
+      },
+      "occupancy": 0.5971192528735633,
+      "meanDirty": 0,
+      "meanQueue": 0,
+      "completed": 1297,
+      "lost": 0,
+      "arrivalOccupancyUpperBound": 0.6066176470588236,
+      "cleaningOccupancyUpperBound": 0.7279411764705883
+    },
+    {
+      "rooms": 12,
+      "upgraded": false,
+      "rates": {
+        "price": 90,
+        "checkIn": 2,
+        "clean": 5,
+        "stay": 18,
+        "arrival": 6,
+        "autoDesk": true,
+        "autoClean": true,
+        "vipChance": 0
+      },
+      "occupancy": 0.24860392720306512,
+      "meanDirty": 0,
+      "meanQueue": 0,
+      "completed": 594,
+      "lost": 0,
+      "arrivalOccupancyUpperBound": 0.25,
+      "cleaningOccupancyUpperBound": 0.3
+    },
+    {
+      "rooms": 12,
+      "upgraded": true,
+      "rates": {
+        "price": 1099,
+        "checkIn": 0.8333333333333334,
+        "clean": 2.2727272727272725,
+        "stay": 13.23529411764706,
+        "arrival": 2.727272727272727,
+        "autoDesk": true,
+        "autoClean": true,
+        "vipChance": 0.22
+      },
+      "occupancy": 0.3980795019157088,
+      "meanDirty": 0,
+      "meanQueue": 0,
+      "completed": 1297,
+      "lost": 0,
+      "arrivalOccupancyUpperBound": 0.4044117647058824,
+      "cleaningOccupancyUpperBound": 0.48529411764705893
+    }
+  ],
+  "progression": [
+    {
+      "policy": "capacity",
+      "purchases": [
+        {
+          "time": 0,
+          "id": "price"
+        },
+        {
+          "time": 45,
+          "id": "price"
+        },
+        {
+          "time": 70,
+          "id": "desk"
+        },
+        {
+          "time": 120,
+          "id": "room"
+        },
+        {
+          "time": 141,
+          "id": "clean"
+        },
+        {
+          "time": 166,
+          "id": "bed"
+        },
+        {
+          "time": 190,
+          "id": "price"
+        },
+        {
+          "time": 214,
+          "id": "desk"
+        },
+        {
+          "time": 238,
+          "id": "room"
+        },
+        {
+          "time": 259,
+          "id": "clean"
+        },
+        {
+          "time": 266,
+          "id": "marketing"
+        },
+        {
+          "time": 291,
+          "id": "autodesk"
+        },
+        {
+          "time": 311,
+          "id": "bed"
+        },
+        {
+          "time": 334,
+          "id": "price"
+        },
+        {
+          "time": 357,
+          "id": "room"
+        },
+        {
+          "time": 377,
+          "id": "desk"
+        },
+        {
+          "time": 384,
+          "id": "clean"
+        },
+        {
+          "time": 407,
+          "id": "marketing"
+        },
+        {
+          "time": 432,
+          "id": "price"
+        },
+        {
+          "time": 454,
+          "id": "bed"
+        },
+        {
+          "time": 476,
+          "id": "luxury"
+        },
+        {
+          "time": 496,
+          "id": "desk"
+        },
+        {
+          "time": 514,
+          "id": "clean"
+        },
+        {
+          "time": 534,
+          "id": "marketing"
+        },
+        {
+          "time": 557,
+          "id": "autoclean"
+        },
+        {
+          "time": 586,
+          "id": "brand"
+        },
+        {
+          "time": 609,
+          "id": "price"
+        },
+        {
+          "time": 643,
+          "id": "luxury"
+        },
+        {
+          "time": 668,
+          "id": "marketing"
+        },
+        {
+          "time": 696,
+          "id": "vip"
+        },
+        {
+          "time": 767,
+          "id": "luxury"
+        },
+        {
+          "time": 826,
+          "id": "vip"
+        },
+        {
+          "time": 917,
+          "id": "floor"
+        },
+        {
+          "time": 923,
+          "id": "room"
+        },
+        {
+          "time": 934,
+          "id": "room"
+        },
+        {
+          "time": 940,
+          "id": "room"
+        },
+        {
+          "time": 955,
+          "id": "room"
+        },
+        {
+          "time": 972,
+          "id": "brand"
+        },
+        {
+          "time": 1096,
+          "id": "floor"
+        },
+        {
+          "time": 1118,
+          "id": "room"
+        },
+        {
+          "time": 1147,
+          "id": "room"
+        },
+        {
+          "time": 1191,
+          "id": "room"
+        },
+        {
+          "time": 1256,
+          "id": "brand"
+        },
+        {
+          "time": 1324,
+          "id": "room"
+        }
+      ],
+      "snapshots": [
+        {
+          "time": 60,
+          "rooms": 1,
+          "occupied": 1,
+          "revenuePerMinute": 200,
+          "arrival": 6,
+          "queue": 7
+        },
+        {
+          "time": 120,
+          "rooms": 1,
+          "occupied": 0,
+          "revenuePerMinute": 402,
+          "arrival": 6,
+          "queue": 12
+        },
+        {
+          "time": 180,
+          "rooms": 2,
+          "occupied": 2,
+          "revenuePerMinute": 536,
+          "arrival": 6,
+          "queue": 12
+        },
+        {
+          "time": 240,
+          "rooms": 3,
+          "occupied": 1,
+          "revenuePerMinute": 907,
+          "arrival": 6,
+          "queue": 11
+        },
+        {
+          "time": 300,
+          "rooms": 3,
+          "occupied": 3,
+          "revenuePerMinute": 1351,
+          "arrival": 4.615384615384615,
+          "queue": 11
+        },
+        {
+          "time": 360,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 1700,
+          "arrival": 4.615384615384615,
+          "queue": 11
+        },
+        {
+          "time": 420,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 2331,
+          "arrival": 3.75,
+          "queue": 12
+        },
+        {
+          "time": 480,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 3358,
+          "arrival": 3.75,
+          "queue": 11
+        },
+        {
+          "time": 540,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 4896,
+          "arrival": 3.1578947368421053,
+          "queue": 11
+        },
+        {
+          "time": 600,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 5196,
+          "arrival": 3.1578947368421053,
+          "queue": 11
+        },
+        {
+          "time": 660,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 6688,
+          "arrival": 3.1578947368421053,
+          "queue": 12
+        },
+        {
+          "time": 720,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 9856,
+          "arrival": 2.727272727272727,
+          "queue": 11
+        },
+        {
+          "time": 780,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 9856,
+          "arrival": 2.727272727272727,
+          "queue": 11
+        },
+        {
+          "time": 840,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 12978,
+          "arrival": 2.727272727272727,
+          "queue": 11
+        },
+        {
+          "time": 900,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 15244,
+          "arrival": 2.727272727272727,
+          "queue": 12
+        },
+        {
+          "time": 960,
+          "rooms": 8,
+          "occupied": 6,
+          "revenuePerMinute": 18128,
+          "arrival": 2.727272727272727,
+          "queue": 8
+        },
+        {
+          "time": 1020,
+          "rooms": 8,
+          "occupied": 5,
+          "revenuePerMinute": 33779,
+          "arrival": 2.727272727272727,
+          "queue": 4
+        },
+        {
+          "time": 1080,
+          "rooms": 8,
+          "occupied": 5,
+          "revenuePerMinute": 32196,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1140,
+          "rooms": 9,
+          "occupied": 4,
+          "revenuePerMinute": 28352,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1200,
+          "rooms": 11,
+          "occupied": 4,
+          "revenuePerMinute": 27391,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1260,
+          "rooms": 11,
+          "occupied": 5,
+          "revenuePerMinute": 25949,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1320,
+          "rooms": 11,
+          "occupied": 5,
+          "revenuePerMinute": 33106,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1380,
+          "rooms": 12,
+          "occupied": 4,
+          "revenuePerMinute": 30774,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1440,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 29125,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1500,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 29125,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1560,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 32423,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1620,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 31324,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1680,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 36820,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1740,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 25827,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1800,
+          "rooms": 12,
+          "occupied": 4,
+          "revenuePerMinute": 32423,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        }
+      ]
+    },
+    {
+      "policy": "revenue",
+      "purchases": [
+        {
+          "time": 0,
+          "id": "price"
+        },
+        {
+          "time": 45,
+          "id": "price"
+        },
+        {
+          "time": 70,
+          "id": "clean"
+        },
+        {
+          "time": 119,
+          "id": "bed"
+        },
+        {
+          "time": 143,
+          "id": "desk"
+        },
+        {
+          "time": 191,
+          "id": "price"
+        },
+        {
+          "time": 215,
+          "id": "room"
+        },
+        {
+          "time": 239,
+          "id": "clean"
+        },
+        {
+          "time": 264,
+          "id": "room"
+        },
+        {
+          "time": 286,
+          "id": "desk"
+        },
+        {
+          "time": 308,
+          "id": "marketing"
+        },
+        {
+          "time": 316,
+          "id": "autodesk"
+        },
+        {
+          "time": 339,
+          "id": "bed"
+        },
+        {
+          "time": 363,
+          "id": "price"
+        },
+        {
+          "time": 386,
+          "id": "room"
+        },
+        {
+          "time": 405,
+          "id": "desk"
+        },
+        {
+          "time": 424,
+          "id": "clean"
+        },
+        {
+          "time": 436,
+          "id": "marketing"
+        },
+        {
+          "time": 469,
+          "id": "price"
+        },
+        {
+          "time": 491,
+          "id": "bed"
+        },
+        {
+          "time": 513,
+          "id": "luxury"
+        },
+        {
+          "time": 533,
+          "id": "clean"
+        },
+        {
+          "time": 544,
+          "id": "desk"
+        },
+        {
+          "time": 564,
+          "id": "marketing"
+        },
+        {
+          "time": 593,
+          "id": "autoclean"
+        },
+        {
+          "time": 615,
+          "id": "price"
+        },
+        {
+          "time": 638,
+          "id": "brand"
+        },
+        {
+          "time": 673,
+          "id": "luxury"
+        },
+        {
+          "time": 698,
+          "id": "marketing"
+        },
+        {
+          "time": 727,
+          "id": "vip"
+        },
+        {
+          "time": 800,
+          "id": "luxury"
+        },
+        {
+          "time": 862,
+          "id": "vip"
+        },
+        {
+          "time": 943,
+          "id": "floor"
+        },
+        {
+          "time": 944,
+          "id": "room"
+        },
+        {
+          "time": 948,
+          "id": "room"
+        },
+        {
+          "time": 962,
+          "id": "room"
+        },
+        {
+          "time": 975,
+          "id": "room"
+        },
+        {
+          "time": 990,
+          "id": "brand"
+        },
+        {
+          "time": 1114,
+          "id": "floor"
+        },
+        {
+          "time": 1136,
+          "id": "room"
+        },
+        {
+          "time": 1162,
+          "id": "room"
+        },
+        {
+          "time": 1209,
+          "id": "room"
+        },
+        {
+          "time": 1274,
+          "id": "brand"
+        },
+        {
+          "time": 1340,
+          "id": "room"
+        }
+      ],
+      "snapshots": [
+        {
+          "time": 60,
+          "rooms": 1,
+          "occupied": 1,
+          "revenuePerMinute": 200,
+          "arrival": 6,
+          "queue": 7
+        },
+        {
+          "time": 120,
+          "rooms": 1,
+          "occupied": 0,
+          "revenuePerMinute": 402,
+          "arrival": 6,
+          "queue": 12
+        },
+        {
+          "time": 180,
+          "rooms": 1,
+          "occupied": 1,
+          "revenuePerMinute": 328,
+          "arrival": 6,
+          "queue": 12
+        },
+        {
+          "time": 240,
+          "rooms": 2,
+          "occupied": 0,
+          "revenuePerMinute": 743,
+          "arrival": 6,
+          "queue": 12
+        },
+        {
+          "time": 300,
+          "rooms": 3,
+          "occupied": 3,
+          "revenuePerMinute": 965,
+          "arrival": 6,
+          "queue": 11
+        },
+        {
+          "time": 360,
+          "rooms": 3,
+          "occupied": 2,
+          "revenuePerMinute": 1574,
+          "arrival": 4.615384615384615,
+          "queue": 11
+        },
+        {
+          "time": 420,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 1964,
+          "arrival": 4.615384615384615,
+          "queue": 11
+        },
+        {
+          "time": 480,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 3108,
+          "arrival": 3.75,
+          "queue": 11
+        },
+        {
+          "time": 540,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 3843,
+          "arrival": 3.75,
+          "queue": 12
+        },
+        {
+          "time": 600,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 5196,
+          "arrival": 3.1578947368421053,
+          "queue": 11
+        },
+        {
+          "time": 660,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 5617,
+          "arrival": 3.1578947368421053,
+          "queue": 11
+        },
+        {
+          "time": 720,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 8432,
+          "arrival": 2.727272727272727,
+          "queue": 11
+        },
+        {
+          "time": 780,
+          "rooms": 4,
+          "occupied": 2,
+          "revenuePerMinute": 9856,
+          "arrival": 2.727272727272727,
+          "queue": 12
+        },
+        {
+          "time": 840,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 11194,
+          "arrival": 2.727272727272727,
+          "queue": 11
+        },
+        {
+          "time": 900,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 16686,
+          "arrival": 2.727272727272727,
+          "queue": 11
+        },
+        {
+          "time": 960,
+          "rooms": 6,
+          "occupied": 4,
+          "revenuePerMinute": 16068,
+          "arrival": 2.727272727272727,
+          "queue": 12
+        },
+        {
+          "time": 1020,
+          "rooms": 8,
+          "occupied": 6,
+          "revenuePerMinute": 29181,
+          "arrival": 2.727272727272727,
+          "queue": 6
+        },
+        {
+          "time": 1080,
+          "rooms": 8,
+          "occupied": 6,
+          "revenuePerMinute": 35080,
+          "arrival": 2.727272727272727,
+          "queue": 2
+        },
+        {
+          "time": 1140,
+          "rooms": 9,
+          "occupied": 5,
+          "revenuePerMinute": 28832,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1200,
+          "rooms": 10,
+          "occupied": 4,
+          "revenuePerMinute": 25468,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1260,
+          "rooms": 11,
+          "occupied": 4,
+          "revenuePerMinute": 30275,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1320,
+          "rooms": 11,
+          "occupied": 5,
+          "revenuePerMinute": 30972,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1380,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 29125,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1440,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 32423,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1500,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 25827,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1560,
+          "rooms": 12,
+          "occupied": 4,
+          "revenuePerMinute": 31873,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1620,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 31324,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1680,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 37370,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1740,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 27476,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1800,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 29125,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        }
+      ]
+    },
+    {
+      "policy": "service",
+      "purchases": [
+        {
+          "time": 0,
+          "id": "price"
+        },
+        {
+          "time": 45,
+          "id": "clean"
+        },
+        {
+          "time": 70,
+          "id": "desk"
+        },
+        {
+          "time": 118,
+          "id": "price"
+        },
+        {
+          "time": 166,
+          "id": "room"
+        },
+        {
+          "time": 190,
+          "id": "price"
+        },
+        {
+          "time": 215,
+          "id": "bed"
+        },
+        {
+          "time": 239,
+          "id": "room"
+        },
+        {
+          "time": 261,
+          "id": "clean"
+        },
+        {
+          "time": 283,
+          "id": "desk"
+        },
+        {
+          "time": 287,
+          "id": "marketing"
+        },
+        {
+          "time": 311,
+          "id": "autodesk"
+        },
+        {
+          "time": 334,
+          "id": "room"
+        },
+        {
+          "time": 355,
+          "id": "bed"
+        },
+        {
+          "time": 377,
+          "id": "price"
+        },
+        {
+          "time": 389,
+          "id": "desk"
+        },
+        {
+          "time": 408,
+          "id": "clean"
+        },
+        {
+          "time": 427,
+          "id": "marketing"
+        },
+        {
+          "time": 449,
+          "id": "price"
+        },
+        {
+          "time": 475,
+          "id": "bed"
+        },
+        {
+          "time": 497,
+          "id": "clean"
+        },
+        {
+          "time": 519,
+          "id": "luxury"
+        },
+        {
+          "time": 539,
+          "id": "desk"
+        },
+        {
+          "time": 560,
+          "id": "marketing"
+        },
+        {
+          "time": 583,
+          "id": "autoclean"
+        },
+        {
+          "time": 612,
+          "id": "brand"
+        },
+        {
+          "time": 635,
+          "id": "price"
+        },
+        {
+          "time": 660,
+          "id": "marketing"
+        },
+        {
+          "time": 696,
+          "id": "luxury"
+        },
+        {
+          "time": 729,
+          "id": "vip"
+        },
+        {
+          "time": 800,
+          "id": "luxury"
+        },
+        {
+          "time": 862,
+          "id": "vip"
+        },
+        {
+          "time": 947,
+          "id": "floor"
+        },
+        {
+          "time": 949,
+          "id": "room"
+        },
+        {
+          "time": 960,
+          "id": "room"
+        },
+        {
+          "time": 967,
+          "id": "room"
+        },
+        {
+          "time": 979,
+          "id": "room"
+        },
+        {
+          "time": 994,
+          "id": "brand"
+        },
+        {
+          "time": 1121,
+          "id": "floor"
+        },
+        {
+          "time": 1137,
+          "id": "room"
+        },
+        {
+          "time": 1168,
+          "id": "room"
+        },
+        {
+          "time": 1214,
+          "id": "room"
+        },
+        {
+          "time": 1272,
+          "id": "brand"
+        },
+        {
+          "time": 1344,
+          "id": "room"
+        }
+      ],
+      "snapshots": [
+        {
+          "time": 60,
+          "rooms": 1,
+          "occupied": 1,
+          "revenuePerMinute": 200,
+          "arrival": 6,
+          "queue": 7
+        },
+        {
+          "time": 120,
+          "rooms": 1,
+          "occupied": 0,
+          "revenuePerMinute": 330,
+          "arrival": 6,
+          "queue": 12
+        },
+        {
+          "time": 180,
+          "rooms": 2,
+          "occupied": 2,
+          "revenuePerMinute": 268,
+          "arrival": 6,
+          "queue": 12
+        },
+        {
+          "time": 240,
+          "rooms": 3,
+          "occupied": 0,
+          "revenuePerMinute": 950,
+          "arrival": 6,
+          "queue": 11
+        },
+        {
+          "time": 300,
+          "rooms": 3,
+          "occupied": 3,
+          "revenuePerMinute": 1158,
+          "arrival": 4.615384615384615,
+          "queue": 11
+        },
+        {
+          "time": 360,
+          "rooms": 4,
+          "occupied": 2,
+          "revenuePerMinute": 1737,
+          "arrival": 4.615384615384615,
+          "queue": 12
+        },
+        {
+          "time": 420,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 2121,
+          "arrival": 4.615384615384615,
+          "queue": 11
+        },
+        {
+          "time": 480,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 3240,
+          "arrival": 3.75,
+          "queue": 11
+        },
+        {
+          "time": 540,
+          "rooms": 4,
+          "occupied": 2,
+          "revenuePerMinute": 3703,
+          "arrival": 3.75,
+          "queue": 11
+        },
+        {
+          "time": 600,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 5196,
+          "arrival": 3.1578947368421053,
+          "queue": 12
+        },
+        {
+          "time": 660,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 6517,
+          "arrival": 3.1578947368421053,
+          "queue": 11
+        },
+        {
+          "time": 720,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 7248,
+          "arrival": 2.727272727272727,
+          "queue": 11
+        },
+        {
+          "time": 780,
+          "rooms": 4,
+          "occupied": 3,
+          "revenuePerMinute": 9152,
+          "arrival": 2.727272727272727,
+          "queue": 12
+        },
+        {
+          "time": 840,
+          "rooms": 4,
+          "occupied": 4,
+          "revenuePerMinute": 11928,
+          "arrival": 2.727272727272727,
+          "queue": 11
+        },
+        {
+          "time": 900,
+          "rooms": 4,
+          "occupied": 2,
+          "revenuePerMinute": 14832,
+          "arrival": 2.727272727272727,
+          "queue": 12
+        },
+        {
+          "time": 960,
+          "rooms": 5,
+          "occupied": 4,
+          "revenuePerMinute": 15244,
+          "arrival": 2.727272727272727,
+          "queue": 12
+        },
+        {
+          "time": 1020,
+          "rooms": 8,
+          "occupied": 6,
+          "revenuePerMinute": 30349,
+          "arrival": 2.727272727272727,
+          "queue": 6
+        },
+        {
+          "time": 1080,
+          "rooms": 8,
+          "occupied": 6,
+          "revenuePerMinute": 32196,
+          "arrival": 2.727272727272727,
+          "queue": 2
+        },
+        {
+          "time": 1140,
+          "rooms": 9,
+          "occupied": 4,
+          "revenuePerMinute": 31235,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1200,
+          "rooms": 10,
+          "occupied": 4,
+          "revenuePerMinute": 27391,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1260,
+          "rooms": 11,
+          "occupied": 5,
+          "revenuePerMinute": 25949,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1320,
+          "rooms": 11,
+          "occupied": 5,
+          "revenuePerMinute": 31864,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1380,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 28026,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1440,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 33522,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1500,
+          "rooms": 12,
+          "occupied": 4,
+          "revenuePerMinute": 27476,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1560,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 32423,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1620,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 31324,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1680,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 34072,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1740,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 28575,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        },
+        {
+          "time": 1800,
+          "rooms": 12,
+          "occupied": 5,
+          "revenuePerMinute": 29675,
+          "arrival": 2.727272727272727,
+          "queue": 0
+        }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,7 @@ import {
 } from '../core/progression';
 import type { RenderStats } from '../render/perf';
 import { upgradePreview } from './upgradePreview';
+import { recommendationView } from './recommendation';
 
 const money = (value: number) =>
   `¥${Math.floor(value).toLocaleString('zh-CN')}`;
@@ -264,14 +265,10 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
       const recommendation = recommendedUpgrade(state);
       get('#upgrade-dot').hidden = !recommendation;
       const rec = get<HTMLButtonElement>('#recommendation');
-      rec.hidden = !recommendation;
-      if (recommendation) {
-        rec.dataset.value = recommendation.id;
-        text(
-          '#recommendation',
-          `推荐 · ${recommendation.name}  ¥${upgradeCost(state, recommendation.id).toLocaleString('zh-CN')}  ↗`,
-        );
-      }
+      const recommendationSlot = recommendationView(state);
+      rec.disabled = recommendationSlot.disabled;
+      rec.dataset.value = recommendationSlot.id;
+      text('#recommendation', recommendationSlot.label);
       get<HTMLButtonElement>('#checkin').title = paused
         ? '营业已暂停'
         : !state.queue.length
