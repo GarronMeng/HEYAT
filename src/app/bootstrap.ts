@@ -104,7 +104,11 @@ export function bootstrap() {
       } else if (name === 'quality') {
         quality = value!;
         renderer.setQuality(
-          quality === 'auto' ? 'medium' : (quality as Quality),
+          quality === 'auto'
+            ? /iPhone|iPad|Android/i.test(navigator.userAgent)
+              ? 'low'
+              : 'medium'
+            : (quality as Quality),
           quality === 'auto',
         );
       } else if (name === 'pause') {
