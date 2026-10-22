@@ -71,14 +71,15 @@ test('context restoration resumes one clock without losing the save', async ({
 }) => {
   await start(page);
   await page.locator('#checkin').click();
-  await page.locator('canvas').evaluate((canvas: HTMLCanvasElement) => {
-    const extension = canvas
-      .getContext('webgl2')!
-      .getExtension('WEBGL_lose_context')!;
-    extension.loseContext();
-    setTimeout(() => extension.restoreContext(), 700);
-  });
+  const extension = await page
+    .locator('canvas')
+    .evaluateHandle((canvas: HTMLCanvasElement) => {
+      return canvas.getContext('webgl2')!.getExtension('WEBGL_lose_context')!;
+    });
+  await extension.evaluate((extension) => extension.loseContext());
   await expect(page.locator('#boot-detail')).toContainText('图形连接已中断');
+  await extension.evaluate((extension) => extension.restoreContext());
+  await extension.dispose();
   await expect(page.locator('#boot-status')).toHaveText('WebGL 2 已就绪');
   await expect(page.locator('#cash')).toHaveText('¥120');
   await expect

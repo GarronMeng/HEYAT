@@ -1,5 +1,6 @@
 import * as T from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import {
   initialHotel,
   floorCount,
@@ -37,12 +38,33 @@ export function createRenderer(
   const renderer = new T.WebGLRenderer({ canvas, context });
   renderer.outputColorSpace = T.SRGBColorSpace;
   renderer.toneMapping = T.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMappingExposure = 1.08;
   const scene = new T.Scene();
   scene.background = new T.Color('#091a2a');
   scene.fog = new T.Fog('#091a2a', 26, 65);
   const assets = createAssets(),
     people = createPeople(assets);
+  // Prefilter once at startup. No live reflection camera, per-room lights or shadows.
+  const bakeEnvironment = () => {
+    const environmentScene = new RoomEnvironment();
+    const pmrem = new T.PMREMGenerator(renderer);
+    try {
+      return pmrem.fromScene(environmentScene, 0.06);
+    } finally {
+      environmentScene.dispose();
+      pmrem.dispose();
+    }
+  };
+  let environment = bakeEnvironment();
+  scene.environment = environment.texture;
+  scene.environmentIntensity = 0.45;
+  const restoreEnvironment = () => {
+    environment.dispose();
+    // Render targets lose their pixels on context loss; regenerate from procedural source.
+    environment = bakeEnvironment();
+    scene.environment = environment.texture;
+  };
+  canvas.addEventListener('webglcontextrestored', restoreEnvironment);
   const camera = new T.OrthographicCamera(-9, 9, 6, -6, 0.1, 100);
   camera.position.set(13, 10, 17);
   const controls = new OrbitControls(camera, canvas);
@@ -57,11 +79,11 @@ export function createRenderer(
   controls.maxZoom = 2.1;
   controls.rotateSpeed = 0.45;
   controls.zoomSpeed = 0.7;
-  scene.add(new T.HemisphereLight('#9dbbd6', '#5d5140', 2.3));
-  const moon = new T.DirectionalLight('#d6e4ed', 3);
+  scene.add(new T.HemisphereLight('#7e9bbf', '#67513b', 0.65));
+  const moon = new T.DirectionalLight('#b5c9eb', 1.1);
   moon.position.set(-5, 10, 8);
   scene.add(moon);
-  const warm = new T.DirectionalLight('#f8c387', 1.6);
+  const warm = new T.DirectionalLight('#ffd39b', 1.6);
   warm.position.set(4, 6, 4);
   scene.add(warm);
   // Repeated city silhouettes and illuminated windows share instanced draws.
@@ -204,6 +226,21 @@ export function createRenderer(
       viewport: { width, height, dpr },
       mobileStatus: 'MOBILE_PERF_UNVERIFIED',
       renderer: context.getParameter(context.RENDERER),
+      gpu: context.getExtension('WEBGL_debug_renderer_info')
+        ? context.getParameter(
+            context.getExtension('WEBGL_debug_renderer_info')!
+              .UNMASKED_RENDERER_WEBGL,
+          )
+        : 'unavailable',
+      resources: {
+        geometries: renderer.info.memory.geometries,
+        textures: renderer.info.memory.textures,
+        surfaceTextureBytesEstimate: Math.round(assets.textureBytesEstimate),
+        heapBytes:
+          (performance as Performance & { memory?: { usedJSHeapSize: number } })
+            .memory?.usedJSHeapSize ?? null,
+        note: 'Texture bytes are a conservative RGBA+mipmap estimate; GPU/VRAM bytes are not exposed by WebGL. Heap is browser-dependent.',
+      },
       samples: metrics.samples,
     }),
     render() {
@@ -256,6 +293,8 @@ export function createRenderer(
       windows.dispose();
       lit.dispose();
       people.dispose();
+      canvas.removeEventListener('webglcontextrestored', restoreEnvironment);
+      environment.dispose();
       assets.dispose();
       renderer.dispose();
     },
