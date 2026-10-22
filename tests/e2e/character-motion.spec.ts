@@ -75,9 +75,17 @@ test('persistent characters survive 3x, pause, LOD and context restoration', asy
   const canvas = page.locator('#scene');
   const bounds = await canvas.boundingBox();
   await page.mouse.move(bounds!.x + bounds!.width / 2, bounds!.y + 200);
-  await page.mouse.wheel(0, 500);
+  await page.mouse.wheel(0, 2000);
   await page.waitForTimeout(500);
-  await page.mouse.wheel(0, -500);
+  await page.getByRole('button', { name: '打开设置' }).click();
+  const distant = await report(page, info.outputPath('distant-report.json'));
+  expect(distant.camera.zoom).toBeLessThan(0.7);
+  expect(distant.characters.simplified).toBe(true);
+  expect(distant.characters.identities).toEqual(first.characters.identities);
+  expect(distant.characters.motion).toEqual(first.characters.motion);
+  await page.getByRole('button', { name: '关闭面板' }).click();
+  await page.mouse.move(bounds!.x + bounds!.width / 2, bounds!.y + 200);
+  await page.mouse.wheel(0, -2000);
   await page.waitForTimeout(500);
   const extension = await canvas.evaluateHandle((el: HTMLCanvasElement) =>
     el.getContext('webgl2')!.getExtension('WEBGL_lose_context')!,
@@ -91,7 +99,14 @@ test('persistent characters survive 3x, pause, LOD and context restoration', asy
   const restored = await report(page, info.outputPath('restored-report.json'));
   expect(restored.characters.motion).toEqual(first.characters.motion);
   expect(restored.resources.geometries).toBe(first.resources.geometries);
-  expect(restored.resources.textures).toBe(first.resources.textures);
+  // Context restoration releases obsolete tier textures; it must not grow them.
+  expect(restored.resources.textures).toBeGreaterThan(0);
+  expect(restored.resources.textures).toBeLessThanOrEqual(
+    first.resources.textures,
+  );
+  expect(restored.characters.identities).toEqual(first.characters.identities);
+  expect(restored.camera.zoom).toBeGreaterThan(0.85);
+  expect(restored.characters.simplified).toBe(false);
   await page.getByRole('button', { name: '关闭面板' }).click();
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole('button', { name: '重置视角' }).click();

@@ -269,6 +269,8 @@ export function createRenderer(
         jointsPerActor: 11,
         representation: 'shared skinned / merged / sprite',
         motion: people.report(),
+        identities: people.identities(),
+        simplified: people.group.userData.simple === true,
       },
       resources: {
         geometries: renderer.info.memory.geometries,
