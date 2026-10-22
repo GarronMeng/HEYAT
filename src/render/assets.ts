@@ -29,6 +29,7 @@ export function createAssets() {
       color,
       map: surfaces.fabric.map,
       normalMap: surfaces.fabric.normal,
+      roughnessMap: surfaces.fabric.roughness,
       normalScale: new T.Vector2(0.3, 0.3),
       roughness: 0.96,
     });
@@ -37,8 +38,9 @@ export function createAssets() {
       color,
       map: surfaces.marble.map,
       normalMap: surfaces.marble.normal,
+      roughnessMap: surfaces.marble.roughness,
       normalScale: new T.Vector2(0.12, 0.12),
-      roughness,
+      roughness: Math.min(1, roughness * 2.5),
     });
   const materials = {
     wall: material('#b6a895'),
@@ -47,10 +49,11 @@ export function createAssets() {
     wood: new T.MeshStandardMaterial({
       map: surfaces.oak.map,
       normalMap: surfaces.oak.normal,
+      roughnessMap: surfaces.oak.roughness,
       normalScale: new T.Vector2(0.35, 0.35),
-      roughness: 0.46,
+      roughness: 0.86,
     }),
-    brass: material('#b99a61', 0.28, 0.78),
+    brass: material('#c0a06a', 0.34, 0.8),
     white: textile('#fff7e9'),
     sand: textile('#cab497'),
     teal: textile('#53857e'),
@@ -84,12 +87,13 @@ export function createAssets() {
       color: '#cfb98f',
       map: surfaces.oak.map,
       normalMap: surfaces.oak.normal,
+      roughnessMap: surfaces.oak.roughness,
       normalScale: new T.Vector2(0.15, 0.15),
       lightMap: surfaces.floorLight,
-      lightMapIntensity: 1.6,
+      lightMapIntensity: 0.65,
       aoMap: surfaces.floorAO,
-      aoMapIntensity: 0.85,
-      roughness: 0.52,
+      aoMapIntensity: 0.6,
+      roughness: 0.9,
     }),
     art: new T.MeshBasicMaterial({ map: surfaces.art }),
     halo: new T.MeshBasicMaterial({
@@ -157,6 +161,7 @@ export function createAssets() {
     geometries,
     materials,
     textureCount: surfaces.textures.length,
+    bakeStatus: surfaces.bakeStatus,
     textureBytesEstimate: surfaces.textures.reduce((sum, t) => {
       const image = t.image as { width: number; height: number };
       return sum + (image.width * image.height * 4 * 4) / 3;
