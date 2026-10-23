@@ -45,9 +45,6 @@ export function createRenderer(
   scene.fog = new T.Fog('#091a2a', 26, 65);
   const assets = createAssets(),
     people = createPeople();
-  const bakeStatus = (
-    assets as unknown as { bakeStatus?: Record<string, unknown> }
-  ).bakeStatus ?? {};
   // Start iPhone/Android in the cheapest tier rather than waiting for a
   // sustained low-FPS trigger during shader compilation.
   let quality: Quality = /iPhone|iPad|Android/i.test(navigator.userAgent)
@@ -266,7 +263,7 @@ export function createRenderer(
               .UNMASKED_RENDERER_WEBGL,
           )
         : 'unavailable',
-      surfaceBakes: { ...bakeStatus },
+      surfaceBakes: { ...assets.bakeStatus },
       facilities: hotel.group.userData.facilities ?? [],
       characters: {
         pool: 6,
