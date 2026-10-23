@@ -5,6 +5,7 @@ import { createRenderer, type SceneRenderer } from '../render/createRenderer';
 import type { Quality } from '../render/perf';
 import { createStatusView } from '../ui/status';
 import { createGameView } from '../ui/game';
+import { commandFeedback, receiptTracker } from '../ui/actionFeedback';
 import { createRenderLoop, simulationFrameDelta } from './renderLoop';
 
 export const SAVE_KEY = 'heyat-save-v1';
@@ -36,7 +37,7 @@ export function bootstrap() {
   let last = 0,
     lastUpdate = 0,
     lastSave = 0,
-    lastCompleted = initial.completed,
+    earnings = receiptTracker(initial.receipts),
     endingShown = initial.won;
   const download = (name: string, contents: string) => {
     const url = URL.createObjectURL(
@@ -89,7 +90,7 @@ export function bootstrap() {
         simulation = new HotelSimulation();
         saveBlocked = false;
         endingShown = false;
-        lastCompleted = 0;
+        earnings = receiptTracker([]);
         ending.close();
         welcome.close();
         modal = false;
@@ -132,11 +133,17 @@ export function bootstrap() {
         !lost &&
         ['checkin', 'clean', 'buy'].includes(name)
       ) {
+        const before = simulation.snapshot();
         const result = simulation.command(
           name === 'buy'
             ? { type: 'BUY', id: value! }
             : { type: name === 'checkin' ? 'CHECK_IN' : 'CLEAN' },
         );
+        if (result.ok)
+          view.feedback(
+            name,
+            commandFeedback(before, simulation.snapshot(), name),
+          );
         view.toast(result.message);
         save();
       }
@@ -175,11 +182,11 @@ export function bootstrap() {
           update();
           lastUpdate = now;
           const state = simulation.snapshot();
-          if (state.completed > lastCompleted) {
-            view.toast(
-              `退房入账 +¥${state.receipts.at(-1)!.revenue.toLocaleString('zh-CN')}`,
-            );
-            lastCompleted = state.completed;
+          const income = earnings.consume(state.receipts);
+          if (income.count > 0) {
+            const message = `退房到账 +¥${income.amount.toLocaleString('zh-CN')} · ${income.count} 单`;
+            view.feedback('checkin', message, 'income');
+            view.toast(message);
           }
           if (state.won && !endingShown) {
             endingShown = true;

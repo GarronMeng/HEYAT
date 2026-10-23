@@ -94,10 +94,29 @@
           >
             酒店概览
           </button>
-          <button class="primary" data-action="checkin" id="checkin">
-            接待入住
+          <button
+            class="primary"
+            data-action="checkin"
+            id="checkin"
+            aria-label="接待入住"
+            aria-describedby="checkin-meta"
+          >
+            <span class="action-label">接待入住</span>
+            <small class="operation-meta" id="checkin-meta"
+              >退房时收取房费</small
+            >
+            <i class="operation-progress" aria-hidden="true"></i>
           </button>
-          <button data-action="clean" id="clean">安排清洁</button>
+          <button
+            data-action="clean"
+            id="clean"
+            aria-label="安排清洁"
+            aria-describedby="clean-meta"
+          >
+            <span class="action-label">安排清洁</span
+            ><small class="operation-meta" id="clean-meta">准备下一次入住</small
+            ><i class="operation-progress" aria-hidden="true"></i>
+          </button>
           <button data-action="upgrades" class="gold" id="upgrades">
             升级与扩建 <span id="upgrade-dot"></span>
           </button>
@@ -110,6 +129,7 @@
             暂无可用升级 · 继续经营
           </button>
         </section>
+        <div id="feedback-layer" aria-live="polite" aria-atomic="false"></div>
         <div
           id="toast"
           class="toast"

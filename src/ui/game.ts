@@ -15,6 +15,7 @@ import {
 import type { RenderStats } from '../render/perf';
 import { upgradePreview } from './upgradePreview';
 import { recommendationView } from './recommendation';
+import { operationView } from './actionFeedback';
 
 const money = (value: number) =>
   `¥${Math.floor(value).toLocaleString('zh-CN')}`;
@@ -281,11 +282,41 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
         : !state.rooms.some((r) => r.status === 'DIRTY')
           ? '当前没有待清洁客房'
           : '安排一间客房清洁';
+      for (const action of ['checkin', 'clean'] as const) {
+        const operation = operationView(state, action);
+        const button = get<HTMLButtonElement>(`#${action}`);
+        text(
+          `#${action}-meta`,
+          operation.label +
+            (operation.expected ? ` · 预计 ¥${operation.expected}` : ''),
+        );
+        button.style.setProperty(
+          '--operation-progress',
+          String(operation.progress),
+        );
+        button.setAttribute('aria-busy', String(operation.busy));
+      }
       drawPanel();
     },
     selectRoom(id: number) {
       selected = id;
       show('room');
+    },
+    feedback(action: string, message: string, kind = 'action') {
+      const layer = get('#feedback-layer');
+      const button = get(`#${action === 'buy' ? 'upgrades' : action}`);
+      const rect = button.getBoundingClientRect();
+      const chip = document.createElement('span');
+      chip.className = 'feedback-chip';
+      chip.dataset.kind = kind;
+      chip.textContent = message;
+      chip.style.left = `${Math.max(8, Math.min(innerWidth - 288, rect.x))}px`;
+      chip.style.top = `${Math.max(10, rect.y - 46 - layer.children.length * 34)}px`;
+      while (layer.children.length >= 6) layer.firstElementChild!.remove();
+      layer.append(chip);
+      chip.addEventListener('animationend', () => chip.remove(), {
+        once: true,
+      });
     },
     toast(message: string) {
       const el = get('#toast');
