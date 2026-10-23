@@ -1,4 +1,10 @@
 import {
+  cleaningSlots,
+  conversionChance,
+  demandState,
+  recordExperience,
+} from './demand';
+import {
   planFacilityVisits,
   serviceFacilityVisits,
   facilityTotal,
@@ -43,7 +49,10 @@ export function admit(state: HotelState): CommandResult {
 }
 
 export function clean(state: HotelState): CommandResult {
-  if (state.rooms.some((room) => room.status === 'CLEANING'))
+  if (
+    state.rooms.filter((room) => room.status === 'CLEANING').length >=
+    cleaningSlots(state)
+  )
     return { ok: false, message: '客房管家正在清洁' };
   const room = state.rooms.find((room) => room.status === 'DIRTY');
   if (!room) return { ok: false, message: '所有开放客房都很整洁' };
@@ -53,6 +62,12 @@ export function clean(state: HotelState): CommandResult {
 
 export function tick(state: HotelState) {
   state.time = Math.round((state.time + STEP) * 10) / 10;
+  const demand = demandState(state);
+  const open = state.rooms.filter((r) => r.status !== 'LOCKED').length;
+  const utilisation =
+    state.rooms.filter((r) => r.status === 'OCCUPIED').length /
+    Math.max(1, open);
+  demand.utilisation += (utilisation - demand.utilisation) * 0.002;
   serviceFacilityVisits(state, STEP);
   for (const room of state.rooms) {
     if (!['RESERVED', 'OCCUPIED', 'CLEANING'].includes(room.status)) continue;
@@ -72,6 +87,7 @@ export function tick(state: HotelState) {
       const order = room.order!;
       const facilityRevenue = facilityTotal(order);
       const totalRevenue = order.revenue + facilityRevenue;
+      recordExperience(state, order);
       const facilities = settleFacilityVisits(state, order);
       state.cash += totalRevenue;
       state.revenue += totalRevenue;
@@ -94,6 +110,7 @@ export function tick(state: HotelState) {
     (g) => !g.kind || state.time - g.arrivedAt <= guestProfile(g).patience,
   );
   if (state.queue.length !== patient.length) state.eventId++;
+  demand.patienceLost += state.queue.length - patient.length;
   state.lost += state.queue.length - patient.length;
   state.queue = patient;
   if (state.time >= state.nextArrival) {
@@ -107,8 +124,15 @@ export function tick(state: HotelState) {
       vip: kind === 'globalist',
     };
     state.eventId++;
-    if (state.queue.length < 12) state.queue.push(guest);
-    else state.lost++;
+    demand.offered++;
+    if (random(state) < conversionChance(state, kind, rates(state).price)) {
+      demand.converted++;
+      if (state.queue.length < 12) state.queue.push(guest);
+      else {
+        state.lost++;
+        demand.queueLost++;
+      }
+    } else demand.rejected++;
     state.nextArrival =
       state.time + rates(state).arrival * (0.85 + random(state) * 0.3);
   }

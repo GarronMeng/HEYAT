@@ -21,9 +21,9 @@ export function upgradePreview(state: HotelState, id: string): string {
   if (id === 'desk')
     return `办理入住 ${before.checkIn.toFixed(1)} → ${after.checkIn.toFixed(1)} 秒`;
   if (id === 'clean')
-    return `清洁周期 ${before.clean.toFixed(1)} → ${after.clean.toFixed(1)} 秒`;
+    return `清洁 ${before.clean.toFixed(1)} → ${after.clean.toFixed(1)} 秒 · 班组 ${before.cleanSlots} → ${after.cleanSlots}`;
   if (id === 'marketing')
-    return `到店间隔 ${before.arrival.toFixed(1)} → ${after.arrival.toFixed(1)} 秒`;
+    return `咨询间隔 ${before.arrival.toFixed(1)} → ${after.arrival.toFixed(1)} 秒`;
   if (id === 'autodesk') return '手动接待 → 自动接待';
   if (id === 'autoclean') return '手动清洁 → 自动清洁';
   if (id === 'room')

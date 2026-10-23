@@ -53,8 +53,10 @@ for (const rooms of [1, 4, 8, 12])
       meanQueue: queue / 34800,
       completed: result.completed,
       lost: result.lost,
-      arrivalOccupancyUpperBound: rate.stay / (rate.arrival * rooms),
-      cleaningOccupancyUpperBound: rate.stay / (rate.clean * rooms),
+      arrivalOccupancyUpperBound: (rate.stay * 1.3) / (rate.arrival * rooms),
+      cleaningOccupancyUpperBound:
+        (rate.stay * 1.3 * (rate.cleanSlots ?? 1)) / (rate.clean * rooms),
+      demand: result.demand,
     });
   }
 const policies = {
@@ -135,7 +137,7 @@ for (const [policy, priority] of Object.entries(policies)) {
   progression.push({ policy, purchases, snapshots });
 }
 const report = {
-  baseline: '0ded498b8dd7d152fd6452cfc1a59693c19c3e4c',
+  baseline: process.env.HEYAT_AUDIT_LABEL ?? 'working-tree-N03',
   seed: 1731,
   scenarioSeconds: 3600,
   warmupSeconds: 120,
