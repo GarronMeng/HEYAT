@@ -1,4 +1,4 @@
-import type { Guest, GuestKind, HotelState } from './model';
+import type { FacilityId, Guest, GuestKind, HotelState } from './model';
 /** Preferences and service economics are data, never decisions in the renderer. */
 export const GUEST_TYPES = {
   standard: {
@@ -26,7 +26,7 @@ export const GUEST_TYPES = {
     description: '看重行政礼遇和夜间体验，等待耐心较短',
   },
 } as const;
-export const FACILITY_LABELS: Record<string, string> = {
+export const FACILITY_LABELS: Record<FacilityId, string> = {
   breakfast: '早餐厅',
   gym: '健身房',
   lounge: '行政酒廊',

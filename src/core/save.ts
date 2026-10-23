@@ -1,6 +1,7 @@
 import {
   assertHotel,
   GUEST_KINDS,
+  FACILITY_IDS,
   ROOM_STATES,
   type Guest,
   type HotelState,
@@ -58,6 +59,13 @@ export function decodeSave(raw: string): HotelState {
   )
     throw new Error('升级存档损坏');
   if (
+    FACILITY_IDS.some(
+      (id) =>
+        value.levels && ((value.levels as Record<string, number>)[id] ?? 0) > 3,
+    )
+  )
+    throw new Error('设施等级损坏');
+  if (
     !Array.isArray(value.queue) ||
     value.queue.length > 12 ||
     !value.queue.every(guest)
@@ -103,6 +111,71 @@ export function decodeSave(raw: string): HotelState {
     (value.wonAt !== null && !numeric(value.wonAt))
   )
     throw new Error('进度存档损坏');
+  if (value.facilityStats !== undefined) {
+    if (!object(value.facilityStats)) throw new Error('设施统计损坏');
+    for (const [id, stats] of Object.entries(value.facilityStats))
+      if (
+        !FACILITY_IDS.includes(id as never) ||
+        !object(stats) ||
+        !integer(stats.served) ||
+        !integer(stats.missed) ||
+        !numeric(stats.revenue)
+      )
+        throw new Error('设施统计损坏');
+  }
+  for (const room of value.rooms as Record<string, unknown>[]) {
+    const order = room.order as Record<string, unknown> | null;
+    if (order?.visits !== undefined) {
+      if (!Array.isArray(order.visits) || order.visits.length > 4)
+        throw new Error('设施订单损坏');
+      const ids = new Set();
+      for (const visit of order.visits) {
+        if (
+          !object(visit) ||
+          !FACILITY_IDS.includes(visit.id as never) ||
+          ids.has(visit.id) ||
+          !numeric(visit.fee) ||
+          !numeric(visit.duration) ||
+          visit.duration <= 0 ||
+          !numeric(visit.remaining) ||
+          visit.remaining > visit.duration ||
+          !['queued', 'serving', 'served', 'missed'].includes(
+            visit.status as string,
+          )
+        )
+          throw new Error('设施订单损坏');
+        ids.add(visit.id);
+      }
+    }
+  }
+  for (const receipt of value.receipts as Record<string, unknown>[]) {
+    if (
+      receipt.facilityRevenue !== undefined &&
+      (!numeric(receipt.facilityRevenue) ||
+        !numeric(receipt.roomRevenue) ||
+        receipt.revenue !==
+          (receipt.roomRevenue as number) + (receipt.facilityRevenue as number))
+    )
+      throw new Error('设施结算损坏');
+    if (
+      receipt.facilities !== undefined &&
+      (!object(receipt.facilities) ||
+        Object.entries(receipt.facilities).some(
+          ([id, fee]) => !FACILITY_IDS.includes(id as never) || !numeric(fee),
+        ))
+    )
+      throw new Error('设施账本损坏');
+  }
+  for (const row of value.receipts as Record<string, unknown>[]) {
+    if (
+      object(row.facilities) &&
+      Object.values(row.facilities).reduce<number>(
+        (n, v) => n + (v as number),
+        0,
+      ) !== row.facilityRevenue
+    )
+      throw new Error('设施分账损坏');
+  }
   const state = value as unknown as HotelState;
   const activeIds = state.rooms.flatMap((room) =>
     room.order ? [room.order.id] : [],

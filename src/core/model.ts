@@ -18,7 +18,22 @@ export interface Guest {
   arrivedAt: number;
   vip: boolean;
 }
+export const FACILITY_IDS = ['breakfast', 'gym', 'lounge', 'rooftop'] as const;
+export type FacilityId = (typeof FACILITY_IDS)[number];
+export interface FacilityVisit {
+  id: FacilityId;
+  fee: number;
+  duration: number;
+  remaining: number;
+  status: 'queued' | 'serving' | 'served' | 'missed';
+}
+export interface FacilityStats {
+  served: number;
+  missed: number;
+  revenue: number;
+}
 export interface Order {
+  visits?: FacilityVisit[];
   id: number;
   guest: Guest;
   revenue: number;
@@ -33,12 +48,16 @@ export interface Room {
   order: Order | null;
 }
 export interface Receipt {
+  roomRevenue?: number;
+  facilityRevenue?: number;
+  facilities?: Partial<Record<FacilityId, number>>;
   orderId: number;
   revenue: number;
   at: number;
   guest: string;
 }
 export interface HotelState {
+  facilityStats?: Partial<Record<FacilityId, FacilityStats>>;
   version: 1;
   time: number;
   seed: number;
@@ -164,6 +183,26 @@ export function assertHotel(state: HotelState): void {
       room.remaining < 0
     )
       throw new Error('房态无效');
+    if (room.order?.visits) {
+      const visits = room.order.visits;
+      if (
+        visits.length > 4 ||
+        new Set(visits.map((v) => v.id)).size !== visits.length ||
+        visits.some(
+          (v) =>
+            !FACILITY_IDS.includes(v.id) ||
+            !Number.isFinite(v.fee) ||
+            v.fee < 0 ||
+            !Number.isFinite(v.duration) ||
+            v.duration <= 0 ||
+            !Number.isFinite(v.remaining) ||
+            v.remaining < 0 ||
+            v.remaining > v.duration ||
+            !['queued', 'serving', 'served', 'missed'].includes(v.status),
+        )
+      )
+        throw new Error('设施订单无效');
+    }
     if (
       (room.status === 'RESERVED' || room.status === 'OCCUPIED') !==
       (room.order !== null)
