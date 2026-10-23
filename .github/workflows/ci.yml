@@ -18,7 +18,7 @@ jobs:
   checks:
     name: HYA-001 quality checks
     runs-on: ubuntu-latest
-    # Cold Chromium setup plus serial WebGL before/after captures exceeded 30min.
+    # Serial CPU WebGL captures need longer than the original bootstrap budget.
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
