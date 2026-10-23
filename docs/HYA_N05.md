@@ -20,3 +20,7 @@
 性能采样：[原始报告](evidence/n05/performance.json)。Linux HeadlessChrome141 / SwiftShader软件渲染，页面1440×900，场景1070×566，Low绘制缓冲856×452：81 draw calls、158388三角、16几何、33纹理、JS堆约11.9MB；此自动化含截图和布局切换，采样约4–5FPS，不能推断真实GPU性能。MOBILE_PERF_UNVERIFIED，未完成iPhone真机测试，未宣称达标。设施为程序化低面数视觉近似，人物去设施消费的实体动线尚未模拟；服务是经营状态机实际履约。N03继续处理需求/吞吐瓶颈。
 
 变更：新增core/facilities、render/facilityModules及设施单元/E2E；修改model、save、simulation、progression、guestTypes、hotel/renderer、game/styles/upgradePreview、bootstrap和升级数量断言；证据与本文。原有Low/Medium/High和存档导出保留。本PR不自动合并。
+
+## 2026-10-23 集成记录
+
+为避免与已合并的 Blender 材质分支覆盖彼此的诊断信息，N05 分支已基于最新 main 建立集成合并提交；设施诊断与 `surfaceBakes` 报告均保留。最终集成 CI 通过后再合并到 main。
