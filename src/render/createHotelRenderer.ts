@@ -264,6 +264,7 @@ export function createRenderer(
           )
         : 'unavailable',
       surfaceBakes: { ...assets.bakeStatus },
+      facilities: hotel.group.userData.facilities ?? [],
       characters: {
         pool: 6,
         jointsPerActor: 11,
@@ -291,6 +292,10 @@ export function createRenderer(
         state.levels.luxury,
         state.levels.brand,
         state.levels.autodesk,
+        state.levels.breakfast,
+        state.levels.gym,
+        state.levels.lounge,
+        state.levels.rooftop,
       ].join(':');
       if (key !== previousKey) {
         scene.remove(hotel.group);

@@ -1,4 +1,10 @@
 import {
+  planFacilityVisits,
+  serviceFacilityVisits,
+  facilityTotal,
+  settleFacilityVisits,
+} from './facilities';
+import {
   assertHotel,
   initialHotel,
   random,
@@ -29,6 +35,7 @@ export function admit(state: HotelState): CommandResult {
   room.order = {
     id: state.nextOrder++,
     guest,
+    visits: planFacilityVisits(state, guest),
     revenue: guestRoomRevenue(rates(state).price, state.levels.vip ?? 0, guest),
   };
   transition(room, 'RESERVED', state, rates(state).checkIn);
@@ -46,6 +53,7 @@ export function clean(state: HotelState): CommandResult {
 
 export function tick(state: HotelState) {
   state.time = Math.round((state.time + STEP) * 10) / 10;
+  serviceFacilityVisits(state, STEP);
   for (const room of state.rooms) {
     if (!['RESERVED', 'OCCUPIED', 'CLEANING'].includes(room.status)) continue;
     room.remaining = Math.max(0, Math.round((room.remaining - STEP) * 10) / 10);
@@ -62,12 +70,18 @@ export function tick(state: HotelState) {
       );
     else if (room.status === 'OCCUPIED') {
       const order = room.order!;
-      state.cash += order.revenue;
-      state.revenue += order.revenue;
+      const facilityRevenue = facilityTotal(order);
+      const totalRevenue = order.revenue + facilityRevenue;
+      const facilities = settleFacilityVisits(state, order);
+      state.cash += totalRevenue;
+      state.revenue += totalRevenue;
       state.completed++;
       state.receipts.push({
         orderId: order.id,
-        revenue: order.revenue,
+        revenue: totalRevenue,
+        roomRevenue: order.revenue,
+        facilityRevenue,
+        facilities,
         at: state.time,
         guest: order.guest.name,
       });

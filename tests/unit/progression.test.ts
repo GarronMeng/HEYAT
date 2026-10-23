@@ -9,8 +9,8 @@ import {
 } from '../../src/core/progression';
 import { HotelSimulation } from '../../src/core/simulation';
 
-it('has twelve unique upgrades and refuses unavailable or repeated purchases', () => {
-  expect(new Set(UPGRADES.map((item) => item.id)).size).toBe(12);
+it('preserves twelve base upgrades and adds four facilities and refuses unavailable or repeated purchases', () => {
+  expect(new Set(UPGRADES.map((item) => item.id)).size).toBe(16);
   const state = initialHotel();
   expect(buyUpgrade(state, 'autodesk').ok).toBe(false);
   expect(buyUpgrade(state, 'room').ok).toBe(false);

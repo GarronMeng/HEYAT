@@ -192,7 +192,7 @@ export function bootstrap() {
             endingShown = true;
             modal = true;
             root.querySelector('#ending-detail')!.textContent =
-              `营业 ${Math.floor(state.wonAt! / 60)} 分 ${Math.floor(state.wonAt! % 60)} 秒 · 接待 ${state.completed} 位客人 · 累计房费 ¥${state.revenue.toLocaleString('zh-CN')}`;
+              `营业 ${Math.floor(state.wonAt! / 60)} 分 ${Math.floor(state.wonAt! % 60)} 秒 · 接待 ${state.completed} 位客人 · 累计营收 ¥${state.revenue.toLocaleString('zh-CN')}`;
             ending.showModal();
             save();
           }

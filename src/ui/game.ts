@@ -1,3 +1,4 @@
+import { FACILITIES, facilitySummary } from '../core/facilities';
 import {
   floorCount,
   roomCount,
@@ -44,7 +45,7 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
   const panel = get('#panel');
   let opener: HTMLElement | null = null;
   get('#hud').innerHTML =
-    `<div class="stat"><small>可用资金</small><strong id="cash">¥0</strong></div><div class="stat"><small>累计房费</small><strong id="revenue">¥0</strong></div><div class="stat"><small>入住 / 开放</small><strong id="occupancy">0 / 1</strong></div><div class="stat"><small>品牌等级</small><strong id="brand-level">—</strong></div>`;
+    `<div class="stat"><small>可用资金</small><strong id="cash">¥0</strong></div><div class="stat"><small>累计营收</small><strong id="revenue">¥0</strong></div><div class="stat"><small>入住 / 开放</small><strong id="occupancy">0 / 1</strong></div><div class="stat"><small>品牌等级</small><strong id="brand-level">—</strong></div>`;
   get('#queue-summary').innerHTML =
     '<span id="queue-wait"></span><small id="queue-status"></small>';
   const text = (selector: string, value: string) => {
@@ -113,7 +114,7 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
     if (mode === 'upgrades') {
       panel.innerHTML =
         heading('升级与扩建', '每次升级都改变酒店的收入、效率或容量。') +
-        `<div class="tabs">${['收益', '效率', '规模'].map((item) => `<button data-action="branch" data-value="${item}" aria-pressed="${item === branch}" class="${item === branch ? 'active' : ''}">${item}</button>`).join('')}</div><div class="panel-body">${UPGRADES.filter(
+        `<div class="tabs">${['收益', '效率', '规模', '设施'].map((item) => `<button data-action="branch" data-value="${item}" aria-pressed="${item === branch}" class="${item === branch ? 'active' : ''}">${item}</button>`).join('')}</div><div class="panel-body">${UPGRADES.filter(
           (u) => u.branch === branch,
         )
           .map((u) => {
@@ -152,7 +153,7 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
                 .needs.map((id) => FACILITY_LABELS[id])
                 .join(
                   '、',
-                )}<br>本次房费 <strong>${money(room.order.revenue)}</strong><br>退房时自动到账`
+                )}<br>本次房费 <strong>${money(room.order.revenue)}</strong><br>退房时自动到账${room.order.visits?.length ? `<br>设施：${room.order.visits.map((v) => `${FACILITY_LABELS[v.id]} ${v.status === 'served' ? '已消费' : v.status === 'serving' ? '服务中' : '待服务'} ¥${v.fee}`).join(' · ')}<br>实际完成消费退房并账` : ''}`
             : room.status === 'DIRTY'
               ? '点击下方「安排清洁」，让客房再次迎客。'
               : room.status === 'LOCKED'
@@ -171,6 +172,15 @@ export function createGameView(root: HTMLElement, actions: ViewActions) {
             ([kind, profile]) =>
               `<article class="guest-segment"><b>${profile.name}</b><span>${state.queue.filter((g) => guestKind(g) === kind).length} 位排队</span><p>${profile.description} · 偏好 ${profile.needs.map((id) => FACILITY_LABELS[id]).join('、')}</p></article>`,
           )
+          .join(
+            '',
+          )}</section><section aria-label="设施运营">${FACILITIES.filter(
+          (f) => (state.levels[f.id] ?? 0) > 0,
+        )
+          .map((f) => {
+            const v = facilitySummary(state, f.id);
+            return `<article class="facility-status"><b>${v.name} · LV${v.level}</b><p>${v.serving}/${v.capacity} 服务中 · ${v.waiting} 等待 · 已服务${v.served}次<br>设施已结算 ${money(v.revenue)} · 错过服务 ${v.missed}次</p></article>`;
+          })
           .join(
             '',
           )}</section><p class="eyebrow">ROOM DIRECTORY</p><div class="room-list">${state.rooms

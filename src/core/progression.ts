@@ -1,3 +1,5 @@
+import { FACILITIES, facilityReason } from './facilities';
+import { FACILITY_LABELS } from './guestTypes';
 import { guestMix } from './guestTypes';
 import {
   floorCount,
@@ -9,7 +11,7 @@ import {
 
 export interface Upgrade {
   id: string;
-  branch: '收益' | '效率' | '规模';
+  branch: '收益' | '效率' | '规模' | '设施';
   name: string;
   description: string;
   base: number;
@@ -155,6 +157,16 @@ export const UPGRADES: readonly Upgrade[] = [
           ? '请先扩建下一层'
           : null,
   },
+  ...FACILITIES.map((f) => ({
+    id: f.id,
+    branch: '设施' as const,
+    name: FACILITY_LABELS[f.id],
+    description: f.description,
+    base: f.cost,
+    growth: 2.2,
+    max: 3,
+    requires: (state: HotelState) => facilityReason(state, f.id),
+  })),
 ];
 export function upgradeCost(state: HotelState, id: string): number {
   const upgrade = UPGRADES.find((item) => item.id === id);
@@ -247,7 +259,7 @@ export function currentGoal(state: HotelState): {
     };
   return {
     title: state.won ? '属于你的城市精品酒店' : '成为城市夜色中的名片',
-    detail: `品牌 3 级 · 累计房费 ¥200,000 · 当前 ¥${state.revenue.toLocaleString('zh-CN')}`,
+    detail: `品牌 3 级 · 累计营收 ¥200,000 · 当前 ¥${state.revenue.toLocaleString('zh-CN')}`,
     progress: Math.min(1, state.revenue / 200000),
   };
 }
@@ -265,6 +277,10 @@ export function recommendedUpgrade(state: HotelState): Upgrade | undefined {
     'desk',
     'vip',
     'marketing',
+    'breakfast',
+    'gym',
+    'lounge',
+    'rooftop',
   ];
   return order
     .map((id) => UPGRADES.find((item) => item.id === id)!)
