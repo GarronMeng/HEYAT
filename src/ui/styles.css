@@ -951,3 +951,12 @@ footer {
     padding-bottom: 8px;
   }
 }
+
+/* The recommendation is a permanent 44px dock row, including its unavailable state. */
+.action-dock .recommendation {
+  height: 44px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
