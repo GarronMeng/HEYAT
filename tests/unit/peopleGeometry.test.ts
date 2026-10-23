@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import * as T from 'three';
 import { bindFigure, figureGeometry, JOINTS } from '../../src/render/figureRig';
-import { peoplePoses } from '../../src/render/peoplePoses';
+import { peoplePoses, serviceRoute } from '../../src/render/peoplePoses';
 import { initialHotel } from '../../src/core/model';
 
 describe('representative hotel people', () => {
@@ -19,7 +19,7 @@ describe('representative hotel people', () => {
       expect(g.boundingBox!.min.y).toBeGreaterThanOrEqual(0);
       expect(g.boundingBox!.max.y).toBeGreaterThan(1.19);
       expect(g.boundingBox!.max.y).toBeLessThan(1.3);
-      expect(g.boundingBox!.max.x - g.boundingBox!.min.x).toBeLessThan(0.38);
+      expect(g.boundingBox!.max.x - g.boundingBox!.min.x).toBeLessThan(0.72);
       const indices = g.getAttribute('skinIndex'),
         weights = g.getAttribute('skinWeight');
       for (let i = 0; i < indices.count; i++) {
@@ -50,11 +50,33 @@ describe('representative hotel people', () => {
       poses = peoplePoses(state, 10);
     expect(poses).toHaveLength(6);
     expect(poses[3]!.action).toBe('clean');
-    expect(poses[4]!.action).toBe('walk');
+    expect(poses[4]!.action).toBe('wait');
     expect(poses[3]!.y).toBe(2.64);
     expect(JSON.stringify(state)).toBe(before);
     state.rooms[0]!.status = 'AVAILABLE';
     state.rooms[1]!.status = 'LOCKED';
     expect(peoplePoses(state, 10)[3]!.action).toBe('idle');
+  });
+  it('keeps the service route continuous, grounded and clear of the reception counter', () => {
+    let previous = serviceRoute(0);
+    let walking = 0,
+      waiting = 0;
+    for (let t = 0.05; t < 150; t += 0.05) {
+      const p = serviceRoute(t);
+      expect(Math.hypot(p.x - previous.x, p.z - previous.z)).toBeLessThan(
+        0.055,
+      );
+      expect(p.y).toBe(0.25);
+      expect(p.x > -2.1 && p.x < 1.8 && p.z < 0.2).toBe(false);
+      expect(p.distance!).toBeGreaterThanOrEqual(previous.distance! - 0.00001);
+      if (p.action === 'walk') walking++;
+      else {
+        waiting++;
+        expect(p.speed).toBe(0);
+      }
+      previous = p;
+    }
+    expect(walking).toBeGreaterThan(100);
+    expect(waiting).toBeGreaterThan(100);
   });
 });

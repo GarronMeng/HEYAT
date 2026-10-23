@@ -1,6 +1,7 @@
 import * as T from 'three';
 import type { HotelState } from '../core/model';
 import { bindFigure, figureGeometry, type Role } from './figureRig';
+import { animateFigure } from './peopleAnimation';
 import { peoplePoses } from './peoplePoses';
 
 function createDistantSprite() {
@@ -42,17 +43,24 @@ export function createPeople() {
     'guest',
     'guest',
   ];
+  const variants = [0, 1, 0, 0, 0, 1];
   const geometry = new Map(
-    [...new Set(roles)].map((role) => [role, figureGeometry(role)]),
+    roles.map((role, i) => [
+      `${role}:${variants[i]}`,
+      figureGeometry(role, variants[i]),
+    ]),
   );
   const material = new T.MeshLambertMaterial({ vertexColors: true });
   const sprite = createDistantSprite();
-  const actors = roles.map((role) => {
+  const actors = roles.map((role, i) => {
     const lod = new T.LOD();
-    const rig = bindFigure(geometry.get(role)!, material);
+    const rig = bindFigure(geometry.get(`${role}:${variants[i]}`)!, material);
     lod.addLevel(rig.mesh, 0);
     // Reuse the same coloured silhouette for a readable unanimated middle LOD.
-    lod.addLevel(new T.Mesh(geometry.get(role)!, material), 32);
+    lod.addLevel(
+      new T.Mesh(geometry.get(`${role}:${variants[i]}`)!, material),
+      32,
+    );
     const far = new T.Sprite(sprite.material);
     far.position.y = 0.6;
     far.scale.set(0.43, 1.22, 1);
@@ -75,28 +83,8 @@ export function createPeople() {
         const pose = poses[i]!;
         actor.lod.position.set(pose.x, pose.y, pose.z);
         actor.lod.rotation.y = pose.facing;
-        actor.bones.forEach((b) => b.rotation.set(0, 0, 0));
-        const phase = time * 2.6 + i,
-          stride = pose.action === 'walk' ? Math.sin(phase) * 0.25 : 0;
-        actor.bones[7]!.rotation.x = stride;
-        actor.bones[9]!.rotation.x = -stride;
-        actor.bones[8]!.rotation.x = Math.max(0, -stride) * 0.8;
-        actor.bones[10]!.rotation.x = Math.max(0, stride) * 0.8;
-        actor.bones[3]!.rotation.x = -stride * 0.65;
-        actor.bones[5]!.rotation.x = stride * 0.65;
-        actor.bones[1]!.rotation.y = Math.sin(time * 0.9 + i) * 0.025;
-        actor.bones[2]!.rotation.y = Math.sin(time * 0.6 + i) * 0.09;
-        if (pose.action === 'reception') {
-          actor.bones[5]!.rotation.x = -0.55;
-          actor.bones[6]!.rotation.x = -0.65 + Math.sin(time * 1.8) * 0.1;
-          actor.bones[3]!.rotation.x = -0.22;
-        }
-        if (pose.action === 'clean') {
-          actor.bones[1]!.rotation.x = 0.25;
-          actor.bones[3]!.rotation.x = -0.65 + Math.sin(time * 2.5) * 0.18;
-          actor.bones[4]!.rotation.x = -0.35;
-          actor.bones[5]!.rotation.x = -0.4;
-        }
+        actor.lod.scale.setScalar([1, 0.96, 1.04, 0.96, 1.02, 0.96][i]!);
+        animateFigure(actor.bones, pose, time, i);
         // Orthographic zoom changes apparent size without changing camera distance.
         // Renderer sets this world-units-per-pixel hint rather than relying only on distance.
         const simplified = group.userData.simple === true;
