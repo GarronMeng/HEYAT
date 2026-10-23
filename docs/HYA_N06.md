@@ -11,3 +11,7 @@
 本地环境在开始写入N06时断开，因此本阶段通过GitHub提交及Actions验证，不能声称本地手工视觉验收。首轮运行：https://github.com/GarronMeng/HEYAT/actions/runs/39805857469；该轮未通过，不能用作最终完成凭据。最终结果将记录在PR说明。证据在对应Actions运行的heyat-browser-evidence工件：n06-before-results与test-results/character-motion目录包含真实Three.js PNG、motion/paused/restored报告；dist为生产预览，可下载后在目录中运行npx serve dist（或检出分支npm ci && npm run dev）。不是AI概念图。iPhone真机仍未测试，MOBILE_PERF_UNVERIFIED。
 
 变更文件：render/peopleMotion（新增）、people/peoplePoses/peopleAnimation/figureRig、hotel、createHotelRenderer、app/bootstrap、peopleGeometry/peopleMotion单测、character-motion E2E、CI前后截图步骤与本文。仍保留Low/Medium/High。Blender材质PR #15保持独立，未自动合并或修改已有在线预览。
+
+## 2026-10-23 集成记录
+
+N06 已基于最新 main 建立集成合并提交，保留 N01–N05 的经营逻辑、Blender 材质诊断和四类设施，同时合入连续角色状态机、暂停冻结与楼层服务路线。最终 CI 通过后再合并。
