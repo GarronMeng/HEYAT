@@ -1,0 +1,28 @@
+{
+  "device": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+  "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "browserViewport": [1440, 900],
+  "drawingBuffer": [1440, 566],
+  "DPR": 1,
+  "sampleWaitSeconds": 120,
+  "filteredSamples": 101,
+  "filteredSpanMs": 121832,
+  "medianCalls": 66,
+  "medianTriangles": 60010,
+  "medianFPS": 2.5838623966175907,
+  "medianP95FrameMs": 769.7999999998137,
+  "resources": {
+    "geometries": 18,
+    "textures": 29,
+    "surfaceTextureBytesEstimate": 4237995,
+    "heapBytes": 11200000,
+    "note": "Texture bytes are a conservative RGBA+mipmap estimate; GPU/VRAM bytes are not exposed by WebGL. Heap is browser-dependent."
+  },
+  "surfaceBakes": {
+    "authoring": "Blender 4.5 Cycles",
+    "expected": 11,
+    "loaded": 11,
+    "fallbacks": 0
+  },
+  "limitations": "Paused two-room scene, six animated representatives. Linux CPU SwiftShader is not desktop GPU or iPhone. JS heap coarse; GPU VRAM unavailable."
+}

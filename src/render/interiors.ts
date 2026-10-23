@@ -84,12 +84,12 @@ export function buildRoom(
     );
   shadow(-0.13, -0.48, 1.95, 2.6);
   shadow(0.8, 0.8, 0.95, 1.25);
-  // Shared UV light/AO floor atlas: analytical illumination, not runtime light tracing.
+  // Shared Blender-baked floor irradiance/AO; overlay sits above the wood slab top (+0.033).
   batch.add(
     'plane',
     'floorLight',
     [2.59, 3.88, 1],
-    [x, y + 0.029, 0],
+    [x, y + 0.037, 0],
     0,
     -Math.PI / 2,
   );

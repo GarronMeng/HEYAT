@@ -74,9 +74,59 @@ export function createSurfaces() {
     textures.push(normal);
     return { map, normal };
   };
-  const oak = surface('oak'),
-    marble = surface('marble'),
-    fabric = surface('fabric');
+  // Keep procedural fallbacks until the local Blender assets decode. Update texture
+  // objects in place so every shared material and quality tier sees the same upload.
+  const loader = new T.TextureLoader();
+  let disposed = false;
+  const bakeStatus = {
+    authoring: 'Blender 4.5 Cycles',
+    expected: 11,
+    loaded: 0,
+    fallbacks: 0,
+  };
+  const upgrade = (target: T.Texture, name: string) => {
+    if (typeof window === 'undefined') return;
+    loader.load(
+      `${import.meta.env.BASE_URL}assets/blender/${name}.png`,
+      (loaded) => {
+        if (!disposed) {
+          target.image = loaded.image;
+          target.needsUpdate = true;
+          bakeStatus.loaded++;
+        }
+        loaded.dispose();
+      },
+      undefined,
+      () => {
+        /* Existing deterministic fallback remains usable. */
+        if (!disposed) bakeStatus.fallbacks++;
+      },
+    );
+  };
+  const bakedSurface = (kind: 'oak' | 'marble' | 'fabric') => {
+    const fallback = surface(kind);
+    // TextureLoader images cannot replace DataTexture's typed-array image shape.
+    const normalCanvas = canvas();
+    const ctx = normalCanvas.getContext('2d')!;
+    const pixels = ctx.createImageData(256, 256);
+    pixels.data.set(fallback.normal.image.data!);
+    ctx.putImageData(pixels, 0, 0);
+    const normal = texture(normalCanvas);
+    textures.splice(textures.indexOf(fallback.normal), 1);
+    fallback.normal.dispose();
+    const ormCanvas = canvas();
+    const ormCtx = ormCanvas.getContext('2d')!;
+    ormCtx.fillStyle = '#ffcc00';
+    ormCtx.fillRect(0, 0, 256, 256);
+    const roughness = texture(ormCanvas);
+    upgrade(fallback.map, `${kind}-color`);
+    upgrade(normal, `${kind}-normal`);
+    upgrade(roughness, `${kind}-orm`);
+    return { map: fallback.map, normal, roughness };
+  };
+  const oak = bakedSurface('oak'),
+    marble = bakedSurface('marble'),
+    fabric = bakedSurface('fabric');
   const floorAO = canvas(),
     ao = floorAO.getContext('2d')!;
   ao.fillStyle = '#ffffff';
@@ -144,16 +194,24 @@ export function createSurfaces() {
     );
     paint.fill();
   }
+  const aoMap = texture(floorAO);
+  const lightMap = texture(floorLight, true);
+  upgrade(aoMap, 'room-ao');
+  upgrade(lightMap, 'room-light');
   return {
     oak,
     marble,
     fabric,
-    floorAO: texture(floorAO),
-    floorLight: texture(floorLight, true),
+    floorAO: aoMap,
+    floorLight: lightMap,
     glow: texture(glow, true),
     contact: texture(contact),
     art: texture(art, true),
     textures,
-    dispose: () => textures.forEach((map) => map.dispose()),
+    bakeStatus,
+    dispose: () => {
+      disposed = true;
+      textures.forEach((map) => map.dispose());
+    },
   };
 }

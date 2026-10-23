@@ -1,0 +1,23 @@
+{
+  "blender": "4.5.3 LTS",
+  "engine": "Cycles CPU",
+  "surfaceSamples": 16,
+  "floorSamples": 128,
+  "size": 256,
+  "sourceInstances": 612,
+  "maps": {
+    "fabric-color.png": "940cb402eef9d7de77e9dcd245ce28275c3c6e05cb3318e04ade049b0b12bdd4",
+    "fabric-normal.png": "fd6e29a64f577d9fcf211f81081b8cce0bd97971de80c3416b4c215cc5d978bc",
+    "fabric-orm.png": "5532a32a74ee307a45551c24e806c0eee5b5779001ebc5dbd4b0f0b4c718b249",
+    "marble-color.png": "90261a52b005e64880fb4012da9ecf4a7b9b230360a2404dcb48eb48f086ad2a",
+    "marble-normal.png": "6492d81ce26b6ad9416847ab0aa3e0ad0e117914c8bd464ada66f2ad3f205d92",
+    "marble-orm.png": "6b0d22b80128320ac388dba5ed52564f5bf29f20a412810881da429dc7e4b517",
+    "oak-color.png": "b8d21dbfe5c1ab4c84cd23ee241972340a9427a2ad9625095010c7401fec812c",
+    "oak-normal.png": "46324d84ad1bf7697d8e85c0ca665b6f4370e0748d45d9f4c21ae8e858ae559e",
+    "oak-orm.png": "62e189b2e1ca10346bea71009673f08bc3b40316c79678010f870b048cd97622",
+    "room-ao.png": "92fbe747f6041b247514856974d5685ee03669e584715553e54657e2ea6e8882",
+    "room-light.png": "b68a83671798dc9d5ede65bfa5e3ed63e305d017000472e0760a7b19cd7b96f7"
+  },
+  "space": "albedo/light sRGB, normals/ORM/AO non-color",
+  "note": "Reusable first furnished room bake; floor illumination is an approximation for all room variants."
+}
