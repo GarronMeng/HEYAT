@@ -23,5 +23,5 @@ export function upgradePreview(state: HotelState, id: string): string {
     return `开放客房 ${roomCount(state)} → ${roomCount(state) + 1} 间`;
   if (id === 'floor')
     return `客房楼层 ${floorCount(state)} → ${floorCount(state) + 1} 层`;
-  return `VIP 房费倍率 ${(1 + 0.75 * (state.levels.vip ?? 0)).toFixed(2)} → ${(1 + 0.75 * (next.levels.vip ?? 0)).toFixed(2)}`;
+  return `环球客房费倍率 ${(1.45 + 0.25 * (state.levels.vip ?? 0)).toFixed(2)} → ${(1.45 + 0.25 * (next.levels.vip ?? 0)).toFixed(2)}`;
 }

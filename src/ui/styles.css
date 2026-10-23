@@ -1041,3 +1041,19 @@ footer {
     opacity: 0;
   }
 }
+
+.guest-segment {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+.guest-segment span {
+  float: right;
+  color: #8bcbb5;
+}
+.guest-segment p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 12px;
+}

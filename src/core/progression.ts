@@ -1,3 +1,4 @@
+import { guestMix } from './guestTypes';
 import {
   floorCount,
   roomCount,
@@ -53,7 +54,7 @@ export const UPGRADES: readonly Upgrade[] = [
     id: 'vip',
     branch: '收益',
     name: '「像回家一样」礼遇',
-    description: 'VIP 订单额外增加 75%；部分客人将成为 VIP',
+    description: '吸引环球客，提高其房费支付意愿；会员各有设施偏好',
     base: 4200,
     growth: 3,
     max: 2,
@@ -181,7 +182,7 @@ export function rates(state: HotelState) {
     arrival: 6 / (1 + 0.3 * level(state, 'marketing')),
     autoDesk: !!level(state, 'autodesk'),
     autoClean: !!level(state, 'autoclean'),
-    vipChance: level(state, 'vip') ? 0.22 : 0,
+    vipChance: guestMix(state).globalist,
   };
 }
 export function buyUpgrade(state: HotelState, id: string): CommandResult {
