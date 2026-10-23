@@ -42,20 +42,20 @@ describe('representative hotel people', () => {
     }
     material.dispose();
   });
-  it('bounds visible people at six and reads cleaning/reservation without mutating a save', () => {
+  it('keeps six grounded lobby intents without mutating a save', () => {
     const state = initialHotel();
     state.rooms[0]!.status = 'CLEANING';
     state.rooms[1]!.status = 'RESERVED';
     const before = JSON.stringify(state),
       poses = peoplePoses(state, 10);
     expect(poses).toHaveLength(6);
-    expect(poses[3]!.action).toBe('clean');
+    expect(poses[3]!.action).toBe('wait');
     expect(poses[4]!.action).toBe('wait');
-    expect(poses[3]!.y).toBe(2.64);
+    expect(poses[3]!.y).toBe(0.25);
     expect(JSON.stringify(state)).toBe(before);
     state.rooms[0]!.status = 'AVAILABLE';
     state.rooms[1]!.status = 'LOCKED';
-    expect(peoplePoses(state, 10)[3]!.action).toBe('idle');
+    expect(peoplePoses(state, 10)[3]!.action).toBe('wait');
   });
   it('keeps the service route continuous, grounded and clear of the reception counter', () => {
     let previous = serviceRoute(0);

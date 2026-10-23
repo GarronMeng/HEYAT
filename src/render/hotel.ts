@@ -19,8 +19,9 @@ export function createHotel(assets: Assets, state: HotelState) {
   buildLobby(batch);
   // Frame the entrance with shared street fixtures; keep the middle foreground open.
   for (const x of [-6.3, 6.3]) {
-    soft('dark', [1.05, 0.3, 1.5], [x, 0.12, 1.9]);
-    plant(x, 0.28, 1.9, 0.85);
+    const planterZ = x > 0 ? -2.6 : 1.9;
+    soft('dark', [1.05, 0.3, 1.5], [x, 0.12, planterZ]);
+    plant(x, 0.28, planterZ, 0.85);
     cylinder('black', [0.065, 1.3, 0.065], [x, 0.65, 3.2]);
     cylinder('brass', [0.2, 0.05, 0.2], [x, 1.33, 3.2]);
     batch.add('sphere', 'goldLight', [0.15, 0.23, 0.15], [x, 1.45, 3.2]);
@@ -40,6 +41,18 @@ export function createHotel(assets: Assets, state: HotelState) {
     curtains = new Map<number, T.Mesh>();
   const proxyMaterial = new T.MeshBasicMaterial({ visible: false });
   const floors = floorCount(state);
+  // Open shaft and front landings keep the vertical route clear of solid floors.
+  const shaftTop = 2.64 + (floors - 1) * 2.25 + 1.6;
+  for (const x of [5.88, 6.82])
+    for (const z of [1.02, 1.95])
+      box('brass', [0.045, shaftTop, 0.045], [x, shaftTop / 2, z]);
+  for (let f = 1; f <= floors; f++) {
+    const y = 2.64 + (f - 1) * 2.25;
+    box('stone', [1.12, 0.09, 0.35], [6.35, y - 0.055, 2.1]);
+    box('goldLight', [0.92, 0.025, 0.035], [6.35, y - 0.1, 2.24]);
+    box('brass', [0.04, 0.85, 1.2], [6.89, y + 0.4, 1.62]);
+    box('brass', [1.1, 0.85, 0.04], [6.35, y + 0.4, 0.99]);
+  }
   for (let floor = 1; floor <= floors; floor++) {
     const y = 2.6 + (floor - 1) * 2.25;
     box('dark', [11.6, 0.2, 4.4], [0, y - 0.12, 0]);

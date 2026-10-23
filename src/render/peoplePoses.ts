@@ -9,6 +9,7 @@ export interface PersonPose {
   /** Metres travelled drive footfall; speed drives stride, never a free-running walk. */
   distance?: number;
   speed?: number;
+  riding?: boolean;
 }
 type Stop = readonly [x: number, z: number, hold: number];
 // Open lobby aisle: stay in front of the desk, then round its right end to the lift.
@@ -80,35 +81,9 @@ export function serviceRoute(time: number): PersonPose {
   }
   throw new Error('Unreachable service route');
 }
-/** Six read-only representatives, not extra orders or an independent population simulator. */
+/** Grounded lobby intents; PeopleMotion owns all persistent room journeys. */
 export function peoplePoses(state: HotelState, time: number): PersonPose[] {
-  const cleaner = state.rooms.find((r) => r.status === 'CLEANING');
-  const reserved = state.rooms.find((r) => r.status === 'RESERVED');
-  const occupied = state.rooms.find((r) => r.status === 'OCCUPIED');
-  const roomPose = (
-    room: NonNullable<typeof occupied>,
-    action: Action,
-  ): PersonPose => ({
-    x: -4.05 + room.slot * 2.7 + 0.65,
-    y: 2.64 + (room.floor - 1) * 2.25,
-    z: 1.5,
-    facing: -0.45,
-    action,
-  });
-  // Floor handoff is a cut to the room doorway; no flying through ceilings.
-  const guest =
-    occupied && !reserved
-      ? roomPose(occupied, 'wait')
-      : { x: -0.85, y: 0.25, z: 0.7, facing: Math.PI, action: 'wait' as const };
-  if (occupied && !reserved) {
-    const elapsed = Math.max(0, state.time - occupied.changedAt);
-    const distance = Math.min(0.45, elapsed * 0.3);
-    guest.z = 1.95 - distance;
-    guest.facing = Math.PI;
-    guest.distance = distance;
-    guest.speed = distance < 0.45 ? 0.3 : 0;
-    guest.action = distance < 0.45 ? 'walk' : 'wait';
-  }
+  const reserved = state.rooms.some((r) => r.status === 'RESERVED');
   return [
     {
       x: -0.8,
@@ -125,10 +100,8 @@ export function peoplePoses(state: HotelState, time: number): PersonPose[] {
       action: reserved ? 'greet' : 'reception',
     },
     serviceRoute(time),
-    cleaner
-      ? roomPose(cleaner, 'clean')
-      : { x: 4.5, y: 0.25, z: -0.45, facing: -0.7, action: 'idle' },
-    guest,
+    { x: 4.5, y: 0.25, z: -0.45, facing: -0.7, action: 'wait' },
+    { x: -0.85, y: 0.25, z: 0.7, facing: Math.PI, action: 'wait' },
     {
       x: state.queue.length > 1 ? -0.3 : 1.75,
       y: 0.25,
