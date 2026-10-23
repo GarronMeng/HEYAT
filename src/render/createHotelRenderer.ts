@@ -97,11 +97,11 @@ export function createRenderer(
   controls.maxZoom = 4;
   controls.rotateSpeed = 0.45;
   controls.zoomSpeed = 0.7;
-  scene.add(new T.HemisphereLight('#7e9bbf', '#433628', 0.7));
-  const moon = new T.DirectionalLight('#a9c3eb', 0.85);
+  scene.add(new T.HemisphereLight('#7e9bbf', '#433628', 0.6));
+  const moon = new T.DirectionalLight('#a9c3eb', 0.7);
   moon.position.set(-5, 10, 8);
   scene.add(moon);
-  const warm = new T.DirectionalLight('#ffd39b', 1.45);
+  const warm = new T.DirectionalLight('#ffd39b', 1.55);
   warm.position.set(4, 6, 4);
   scene.add(warm);
   // The background is a single procedural texture with no per-frame city draws.
@@ -263,6 +263,13 @@ export function createRenderer(
               .UNMASKED_RENDERER_WEBGL,
           )
         : 'unavailable',
+      surfaceBakes: {
+        ...(
+          (assets as unknown as {
+            bakeStatus?: Record<string, unknown>;
+          }).bakeStatus ?? {}
+        ),
+      },
       facilities: hotel.group.userData.facilities ?? [],
       characters: {
         pool: 6,
