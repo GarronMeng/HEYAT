@@ -11,7 +11,13 @@ import { createAssets, disposeGroup } from './assets';
 import { createHotel } from './hotel';
 import { createPeople } from './people';
 import { createNightSkyline } from './skyline';
-import { AUTO_QUALITY, FrameMetrics, QUALITY, type Quality, type RenderStats } from './perf';
+import {
+  AUTO_QUALITY,
+  FrameMetrics,
+  QUALITY,
+  type Quality,
+  type RenderStats,
+} from './perf';
 
 export interface SceneRenderer {
   resize(width: number, height: number, dpr: number): void;
