@@ -1,8 +1,10 @@
 import { expect, it } from 'vitest';
-import { AUTO_QUALITY, FrameMetrics, percentile } from '../../src/render/perf';
+import { autoQualityForDevice, FrameMetrics, percentile } from '../../src/render/perf';
 
-it('keeps baked premium presentation enabled in automatic mode', () => {
-  expect(AUTO_QUALITY).toBe('medium');
+it('starts desktop with full premium visuals and mobile with baked PBR', () => {
+  expect(autoQualityForDevice('Mozilla/5.0 (Windows NT 10.0)')).toBe('high');
+  expect(autoQualityForDevice('Mozilla/5.0 (iPhone; CPU iPhone OS 18_1)')).toBe('medium');
+  expect(autoQualityForDevice('Mozilla/5.0 (Linux; Android 15)')).toBe('medium');
 });
 
 it('calculates frame percentiles and caps retained sampling data', () => {
