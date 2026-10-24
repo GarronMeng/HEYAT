@@ -25,20 +25,29 @@ test('architectural wordmarks and clothed people render from the front and an ob
       await new Promise<void>((resolve) =>
         requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
       );
-      const gl = canvas.getContext('webgl2')!,
-        rgba = new Uint8Array(4);
+      const gl = canvas.getContext('webgl2')!;
+      const rgba = new Uint8Array(canvas.width * canvas.height * 4);
       gl.readPixels(
-        Math.floor(canvas.width / 2),
-        Math.floor(canvas.height / 2),
-        1,
-        1,
+        0,
+        0,
+        canvas.width,
+        canvas.height,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
         rgba,
       );
-      return [...rgba];
+      let peak = 0,
+        lit = 0;
+      // A dark centre is valid: inspect the frame, not one arbitrary surface.
+      for (let i = 0; i < rgba.length; i += 64) {
+        const value = Math.max(rgba[i]!, rgba[i + 1]!, rgba[i + 2]!);
+        peak = Math.max(peak, value);
+        if (value > 40 && rgba[i + 3]! > 0) lit++;
+      }
+      return { peak, lit };
     });
-  expect(Math.max(...pixel.slice(0, 3))).toBeGreaterThan(20);
+  expect(pixel.peak).toBeGreaterThan(80);
+  expect(pixel.lit).toBeGreaterThan(100);
   await page.screenshot({ path: info.outputPath('default.png') });
   const box = (await page.locator('#scene').boundingBox())!;
   const x = box.x + box.width * 0.6,

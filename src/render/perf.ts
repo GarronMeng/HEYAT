@@ -1,4 +1,9 @@
 export type Quality = 'low' | 'medium' | 'high';
+/** Desktop starts in the full art tier; mobile retains baked PBR at Medium.
+ * Sustained low FPS may step down, regardless of device. */
+export function autoQualityForDevice(userAgent: string): Quality {
+  return /iPhone|iPad|Android/i.test(userAgent) ? 'medium' : 'high';
+}
 export const QUALITY = {
   low: { dpr: 0.8, people: 10, city: 8 },
   medium: { dpr: 1.2, people: 18, city: 16 },

@@ -1,5 +1,18 @@
 import { expect, it } from 'vitest';
-import { FrameMetrics, percentile } from '../../src/render/perf';
+import {
+  autoQualityForDevice,
+  FrameMetrics,
+  percentile,
+} from '../../src/render/perf';
+
+it('starts desktop with full premium visuals and mobile with baked PBR', () => {
+  const desktop = 'Mozilla/5.0 (Windows NT 10.0)';
+  const iphone = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1)';
+  const android = 'Mozilla/5.0 (Linux; Android 15)';
+  expect(autoQualityForDevice(desktop)).toBe('high');
+  expect(autoQualityForDevice(iphone)).toBe('medium');
+  expect(autoQualityForDevice(android)).toBe('medium');
+});
 
 it('calculates frame percentiles and caps retained sampling data', () => {
   expect(percentile([30, 10, 20], 0.5)).toBe(20);

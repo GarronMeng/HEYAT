@@ -130,13 +130,17 @@ export function createAssets() {
     if (!(source instanceof T.MeshStandardMaterial)) continue;
     const simpler = source.clone();
     simpler.normalMap = null;
-    simpler.aoMap = null;
+    // AO/light maps are precomputed and inexpensive to retain at this tier.
     simpler.envMapIntensity = 0;
     medium.set(source, simpler);
     originals.set(simpler, source);
     const cheapest = new T.MeshLambertMaterial({
       color: source.color.clone(),
       map: source.map,
+      lightMap: source.lightMap,
+      lightMapIntensity: source.lightMapIntensity,
+      aoMap: source.aoMap,
+      aoMapIntensity: source.aoMapIntensity,
       emissive: source.emissive.clone(),
       emissiveIntensity: source.emissiveIntensity,
       opacity: source.opacity,
@@ -183,7 +187,7 @@ export function createAssets() {
         if (primary === materials.halo || primary === materials.contact)
           object.visible = quality !== 'low';
         else if (primary === materials.glass)
-          object.visible = quality === 'high';
+          object.visible = quality !== 'low';
       });
     },
     dispose() {
