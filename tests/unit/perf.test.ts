@@ -3,7 +3,9 @@ import { autoQualityForDevice, FrameMetrics, percentile } from '../../src/render
 
 it('starts desktop with full premium visuals and mobile with baked PBR', () => {
   expect(autoQualityForDevice('Mozilla/5.0 (Windows NT 10.0)')).toBe('high');
-  expect(autoQualityForDevice('Mozilla/5.0 (iPhone; CPU iPhone OS 18_1)')).toBe('medium');
+  expect(
+    autoQualityForDevice('Mozilla/5.0 (iPhone; CPU iPhone OS 18_1)'),
+  ).toBe('medium');
   expect(autoQualityForDevice('Mozilla/5.0 (Linux; Android 15)')).toBe('medium');
 });
 
