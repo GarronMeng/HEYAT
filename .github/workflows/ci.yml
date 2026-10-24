@@ -19,7 +19,7 @@ jobs:
     name: HYA-001 quality checks
     runs-on: ubuntu-latest
     # Serial CPU WebGL captures need longer than the original bootstrap budget.
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,6 +32,18 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npx playwright install --with-deps chromium
+      - name: Capture N06 before view from the tested N03 parent
+        if: github.head_ref == 'fix/n06-continuous-characters'
+        run: |
+          git fetch origin ab85997215abedc30a61095b58ab5cd5566483e3 --depth=1
+          git worktree add --detach "$RUNNER_TEMP/heyat-n06-before" ab85997215abedc30a61095b58ab5cd5566483e3
+          ln -s "$GITHUB_WORKSPACE/node_modules" "$RUNNER_TEMP/heyat-n06-before/node_modules"
+          cp tests/e2e/character-motion.spec.ts "$RUNNER_TEMP/heyat-n06-before/tests/e2e/character-motion.spec.ts"
+          cd "$RUNNER_TEMP/heyat-n06-before"
+          npm run build
+          HEYAT_BASELINE=1 npm run test:e2e -- tests/e2e/character-motion.spec.ts --output "$GITHUB_WORKSPACE/n06-before-results"
+          cd "$GITHUB_WORKSPACE"
+          git worktree remove --force "$RUNNER_TEMP/heyat-n06-before"
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: always()
@@ -40,4 +52,6 @@ jobs:
           path: |
             test-results/
             playwright-report/
+            n06-before-results/
+            dist/
           retention-days: 14

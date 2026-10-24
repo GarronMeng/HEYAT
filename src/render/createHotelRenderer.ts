@@ -15,7 +15,7 @@ import { FrameMetrics, QUALITY, type Quality, type RenderStats } from './perf';
 
 export interface SceneRenderer {
   resize(width: number, height: number, dpr: number): void;
-  render(): void;
+  render(active?: boolean): void;
   dispose(): void;
   setState(state: HotelState): void;
   setQuality(quality: Quality, automatic?: boolean): void;
@@ -269,6 +269,9 @@ export function createRenderer(
         pool: 6,
         jointsPerActor: 11,
         representation: 'shared skinned / merged / sprite',
+        motion: people.report(),
+        identities: people.identities(),
+        simplified: people.group.userData.simple === true,
       },
       resources: {
         geometries: renderer.info.memory.geometries,
@@ -281,7 +284,7 @@ export function createRenderer(
       },
       samples: metrics.samples,
     }),
-    render() {
+    render(active = true) {
       const now = performance.now(),
         delta = lastTime ? now - lastTime : 16.67;
       lastTime = now;
@@ -311,8 +314,9 @@ export function createRenderer(
         if (firstAssembly) resetCamera();
       }
       hotel.update(state);
-      people.group.userData.simple = camera.zoom < 0.8;
-      people.update(state, now / 1000);
+      if (camera.zoom < 0.7) people.group.userData.simple = true;
+      else if (camera.zoom > 0.85) people.group.userData.simple = false;
+      people.update(state, delta / 1000, active);
       controls.update();
       renderer.render(scene, camera);
       stats = metrics.add(delta, now, {

@@ -197,7 +197,7 @@ export function bootstrap() {
             save();
           }
         }
-        renderer.render();
+        renderer.render(!paused && !modal && !lost);
         if (now - lastSave > 5000) {
           save();
           lastSave = now;
