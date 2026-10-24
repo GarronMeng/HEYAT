@@ -2,7 +2,7 @@ import { initialHotel } from '../core/model';
 import { HotelSimulation } from '../core/simulation';
 import { decodeSave, encodeSave } from '../core/save';
 import { createRenderer, type SceneRenderer } from '../render/createRenderer';
-import { AUTO_QUALITY, type Quality } from '../render/perf';
+import { autoQualityForDevice, type Quality } from '../render/perf';
 import { createStatusView } from '../ui/status';
 import { createGameView } from '../ui/game';
 import { commandFeedback, receiptTracker } from '../ui/actionFeedback';
@@ -105,7 +105,9 @@ export function bootstrap() {
       } else if (name === 'quality') {
         quality = value!;
         renderer.setQuality(
-          quality === 'auto' ? AUTO_QUALITY : (quality as Quality),
+          quality === 'auto'
+            ? autoQualityForDevice(navigator.userAgent)
+            : (quality as Quality),
           quality === 'auto',
         );
       } else if (name === 'pause') {
