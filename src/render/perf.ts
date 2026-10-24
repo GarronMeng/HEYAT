@@ -1,4 +1,6 @@
 export type Quality = 'low' | 'medium' | 'high';
+/** Auto starts with baked PBR surfaces on all devices; sustained low FPS may step down. */
+export const AUTO_QUALITY: Quality = 'medium';
 export const QUALITY = {
   low: { dpr: 0.8, people: 10, city: 8 },
   medium: { dpr: 1.2, people: 18, city: 16 },
