@@ -12,7 +12,7 @@ import { createHotel } from './hotel';
 import { createPeople } from './people';
 import { createNightSkyline } from './skyline';
 import {
-  AUTO_QUALITY,
+  autoQualityForDevice,
   FrameMetrics,
   QUALITY,
   type Quality,
@@ -53,7 +53,7 @@ export function createRenderer(
     people = createPeople();
   // Mobile begins with the upgraded baked-material presentation. Sustained
   // low frame rate can still downgrade rendering without changing game state.
-  let quality: Quality = AUTO_QUALITY;
+  let quality: Quality = autoQualityForDevice(navigator.userAgent);
   // Prefilter once at startup. No live reflection camera, per-room lights or shadows.
   const bakeEnvironment = () => {
     const environmentScene = new RoomEnvironment();
