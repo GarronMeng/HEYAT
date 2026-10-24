@@ -11,7 +11,7 @@ import { createAssets, disposeGroup } from './assets';
 import { createHotel } from './hotel';
 import { createPeople } from './people';
 import { createNightSkyline } from './skyline';
-import { FrameMetrics, QUALITY, type Quality, type RenderStats } from './perf';
+import { AUTO_QUALITY, FrameMetrics, QUALITY, type Quality, type RenderStats } from './perf';
 
 export interface SceneRenderer {
   resize(width: number, height: number, dpr: number): void;
@@ -45,11 +45,9 @@ export function createRenderer(
   scene.fog = new T.Fog('#091a2a', 26, 65);
   const assets = createAssets(),
     people = createPeople();
-  // Start iPhone/Android in the cheapest tier rather than waiting for a
-  // sustained low-FPS trigger during shader compilation.
-  let quality: Quality = /iPhone|iPad|Android/i.test(navigator.userAgent)
-    ? 'low'
-    : 'medium';
+  // Mobile begins with the upgraded baked-material presentation. Sustained
+  // low frame rate can still downgrade rendering without changing game state.
+  let quality: Quality = AUTO_QUALITY;
   // Prefilter once at startup. No live reflection camera, per-room lights or shadows.
   const bakeEnvironment = () => {
     const environmentScene = new RoomEnvironment();
