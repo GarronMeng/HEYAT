@@ -1,5 +1,9 @@
 import { expect, it } from 'vitest';
-import { FrameMetrics, percentile } from '../../src/render/perf';
+import { AUTO_QUALITY, FrameMetrics, percentile } from '../../src/render/perf';
+
+it('keeps baked premium presentation enabled in automatic mode', () => {
+  expect(AUTO_QUALITY).toBe('medium');
+});
 
 it('calculates frame percentiles and caps retained sampling data', () => {
   expect(percentile([30, 10, 20], 0.5)).toBe(20);
